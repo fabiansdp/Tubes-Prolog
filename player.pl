@@ -1,5 +1,6 @@
 :- dynamic(player_lvl/1).   /* player_lvl(Level) */
-:- dynamic(player_item/1).  /* player_item(Item) */
+:- dynamic(player_weapon/1).  /* player_weapon(weapon) */
+:- dynamic(player_armor/1).  /* player_armor(armor) */
 :- dynamic(player_hp/2).    /* player_hp(HP, MaxHP) */
 :- dynamic(player_mana/2).  /* player_mana(Mana, MaxMana) */
 :- dynamic(player_att/1).   /* player_att(Att) */
@@ -7,31 +8,50 @@
 :- dynamic(xp/2).           /* xp(XP, BatasXP) */
 :- dynamic(gold/1).         /* gold(Gold) */
 
+:- include('item.pl').
+
+
 /* Fakta-fakta */
 class(1, 'Swordsman').
 class(2, 'Archer').
 class(3, 'Magician').
 
-default_item('Swordsman', 'Beginner Sword').
-default_item('Archer', 'Wooden Bow').
-default_item('Magician', 'Magic Staff').
+/* Special Skill setiap class (class, namaskill) */
+special_skill('Swordsman', 'Rage').
+special_skill('Archer', 'Power Shot').
+special_skill('Magician', 'Divine Light').
 
+/* Default Weapon */
+default_weapon('Swordsman', 'Beginner Sword').
+default_weapon('Archer', 'Wooden Bow').
+default_weapon('Magician', 'Magic Staff').
+
+/* Default Armor */
+default_armor('Swordsman', 'Beginner Armor').
+default_armor('Archer', 'Beginner Cloth').
+default_armor('Magician', 'Beginner Robe').
+
+/* HP Default */
 default_hp('Swordsman', 100, 100).
 default_hp('Archer', 80, 80).
 default_hp('Magician', 50, 50).
 
+/* Pertambahan hp setiap level */
 add_maxhp('Swordsman', 30).
 add_maxhp('Archer', 20).
 add_maxhp('Magician', 10).
 
+/* Mana Default */
 default_mana('Swordsman', 50, 50).
 default_mana('Archer', 70, 70).
 default_mana('Magician', 100, 100).
 
+/* Pertambahan mana setiap level */
 add_maxmana('Swordsman', 20).
 add_maxmana('Archer', 30).
 add_maxmana('Magician', 50).
 
+/* Attack Default */
 default_attack('Swordsman', 10).
 default_attack('Archer', 15).
 default_attack('Magician', 20).
@@ -40,10 +60,12 @@ add_att('Swordsman', 5).
 add_att('Archer', 6).
 add_att('Magician', 7).
 
+/* Defense Default */
 default_defense('Swordsman', 20).
 default_defense('Archer', 10).
 default_defense('Magician', 5).
 
+/* Pertambahan defense setiap level */
 add_def('Swordsman', 10).
 add_def('Archer', 8).
 add_def('Magician', 5).
@@ -55,9 +77,11 @@ set_class(Class):-
 set_lvl:-
     asserta(player_lvl(1)), !.
 
-set_item(Class):-
-    default_item(Class, Item),
-    asserta(player_item(Item)), !.
+set_default_item(Class):-
+    default_weapon(Class, Weapon),
+    default_armor(Class, Armor),
+    asserta(player_weapon(Weapon)),
+    asserta(player_armor(Armor)), !.
 
 set_hp(Class):-
     default_hp(Class, HP, MaxHP),
@@ -84,7 +108,7 @@ set_gold:-
 set_player(Class):-
     set_class(Class),
     set_lvl,
-    set_item(Class),
+    set_default_item(Class),
     set_hp(Class),
     set_mana(Class),
     set_att(Class),
@@ -93,10 +117,11 @@ set_player(Class):-
     set_gold, !.
 
 /* Membaca stat player */
-player(Level, Class, Item, HP, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold) :-
+player(Level, Class, Weapon, Armor, HP, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold) :-
     player_class(Class),
     player_lvl(Level),
-    player_item(Item),
+    player_weapon(Weapon),
+    player_armor(Armor),
     player_hp(HP, MaxHP),
     player_mana(Mana, MaxMana),
     player_att(Att),
@@ -125,10 +150,11 @@ player_init :-
 start:- player_init.
 
 status:-
-    player(Level, Class, Item, HP, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold),
+    player(Level, Class, Weapon, Armor, HP, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold),
     write('Level: '), write(Level), nl,
     write('Class: '), write(Class), nl,
-    write('Item: '), write(Item), nl,
+    write('Weapon: '), write(Weapon), nl,
+    write('Armor: '), write(Armor), nl,
     write('HP: '), write(HP), write('/'), write(MaxHP), nl,
     write('Mana: '), write(Mana), write('/'), write(MaxMana), nl,
     write('Attack: '), write(Att), nl,
@@ -137,7 +163,7 @@ status:-
     write('Gold: '), write(Gold), nl, !.
 
 level_up :-
-    player(Level, _, _, _, MaxHP, _, MaxMana, Att, Def, XP, BatasXP, _),
+    player(Level, _, _, _, _, MaxHP, _, MaxMana, Att, Def, XP, BatasXP, _),
     Levelup is Level + 1,
     XP1 is XP - BatasXP,
     BatasXP1 is BatasXP + round(BatasXP*0.2),
@@ -190,6 +216,33 @@ add_gold(X):-
     Gold1 is Gold + X,
     asserta(gold(Gold1)), !.
 
-changeItem(NewItem):-
-    retractall(player_item(_)),
-    asserta(player_item(NewItem)).
+check_required_lvl(Name):-
+    player_lvl(Level),
+    item(_, _, Name, MinLvl, _),
+    Level >= MinLvl, !.
+
+check_required_lvl(Name):-
+    player_lvl(Level),
+    item(_, _, Name, MinLvl, _),
+    Level < MinLvl,
+    write('Level Tidak Mencukupi!'), nl, !.
+
+set_item('Weapon', Name):-
+    player_att(Att1),
+    check_required_lvl(Name),
+    item(_, _, Name, _, Att),
+    Att2 is Att + Att1,
+    asserta(player_att(Att2)),
+    asserta(player_weapon(Name)), !.
+
+set_item('Armor', Name):-   
+    player_def(Def1),
+    check_required_lvl(Name),
+    item(_, _, Name, _, Def),
+    Def2 is Def + Def1,
+    asserta(player_def(Def2)),
+    asserta(player_armor(Name)), !.
+
+change_item(Name):-
+    item(_, Type, Name, _, _),
+    set_item(Type, Name), !.
