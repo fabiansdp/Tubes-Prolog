@@ -1,12 +1,16 @@
-:- dynamic(player/12). /* player(Level, Class, Item, HP, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold) */
+:- dynamic(player_lvl/1).   /* player_lvl(Level) */
+:- dynamic(player_item/1).  /* player_item(Item) */
+:- dynamic(player_hp/2).    /* player_hp(HP, MaxHP) */
+:- dynamic(player_mana/2).  /* player_mana(Mana, MaxMana) */
+:- dynamic(player_att/1).   /* player_att(Att) */
+:- dynamic(player_def/1).   /* player_def(Def) */
+:- dynamic(xp/2).           /* xp(XP, BatasXP) */
+:- dynamic(gold/1).         /* gold(Gold) */
 
+/* Fakta-fakta */
 class(1, 'Swordsman').
 class(2, 'Archer').
 class(3, 'Magician').
-
-set_class('Swordsman').
-set_class('Archer').
-set_class('Magician').
 
 default_item('Swordsman', 'Beginner Sword').
 default_item('Archer', 'Wooden Bow').
@@ -16,31 +20,96 @@ default_hp('Swordsman', 100, 100).
 default_hp('Archer', 80, 80).
 default_hp('Magician', 50, 50).
 
+add_maxhp('Swordsman', 30).
+add_maxhp('Archer', 20).
+add_maxhp('Magician', 10).
+
 default_mana('Swordsman', 50, 50).
 default_mana('Archer', 70, 70).
 default_mana('Magician', 100, 100).
+
+add_maxmana('Swordsman', 20).
+add_maxmana('Archer', 30).
+add_maxmana('Magician', 50).
 
 default_attack('Swordsman', 10).
 default_attack('Archer', 15).
 default_attack('Magician', 20).
 
+add_att('Swordsman', 5).
+add_att('Archer', 6).
+add_att('Magician', 7).
+
 default_defense('Swordsman', 20).
 default_defense('Archer', 10).
 default_defense('Magician', 5).
 
-set_player(Class):-
+add_def('Swordsman', 10).
+add_def('Archer', 8).
+add_def('Magician', 5).
+
+/* Fungsi untuk set default stat pemain */
+set_class(Class):-
+    asserta(player_class(Class)), !.
+
+set_lvl:-
+    asserta(player_lvl(1)), !.
+
+set_item(Class):-
     default_item(Class, Item),
+    asserta(player_item(Item)), !.
+
+set_hp(Class):-
     default_hp(Class, HP, MaxHP),
+    asserta(player_hp(HP,MaxHP)), !.
+
+set_mana(Class):-
     default_mana(Class, Mana, MaxMana),
+    asserta(player_mana(Mana, MaxMana)), !.
+
+set_att(Class):-
     default_attack(Class, Att),
+    asserta(player_att(Att)), !.
+
+set_def(Class):-
     default_defense(Class, Def),
-    asserta(player(1, Class, Item, HP, MaxHP, Mana, MaxMana, Att, Def, 0, 10, 0)), !.
+    asserta(player_def(Def)), !.
+
+set_xp:-
+    asserta(xp(0,10)), !.
+
+set_gold:-
+    asserta(gold(0)), !.
+
+set_player(Class):-
+    set_class(Class),
+    set_lvl,
+    set_item(Class),
+    set_hp(Class),
+    set_mana(Class),
+    set_att(Class),
+    set_def(Class),
+    set_xp,
+    set_gold, !.
+
+/* Membaca stat player */
+player(Level, Class, Item, HP, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold) :-
+    player_class(Class),
+    player_lvl(Level),
+    player_item(Item),
+    player_hp(HP, MaxHP),
+    player_mana(Mana, MaxMana),
+    player_att(Att),
+    player_def(Def),
+    xp(XP, BatasXP),
+    gold(Gold), !.
 
 response_class(Class):-
     write('Kamu pilih '),
     write(Class),
     write(', misi kamu adalah mengalahkan naga!.'), nl, !.
 
+/* Inisialisasi Player */
 player_init :-
     write('Pilih Kelas: '),nl,
     write('1. Swordsman '),nl,
@@ -51,25 +120,8 @@ player_init :-
     set_player(Class),
     response_class(Class).
 
-set_maxhp('Swordsman', 30).
-set_maxhp('Archer', 20).
-set_maxhp('Magician', 10).
-
-set_maxmana('Swordsman', 20).
-set_maxmana('Archer', 30).
-set_maxmana('Magician', 50).
-
-set_att('Swordsman', 5).
-set_att('Archer', 6).
-set_att('Magician', 7).
-
-set_def('Swordsman', 10).
-set_def('Archer', 8).
-set_def('Magician', 5).
-
 
 /* Commands */
-
 start:- player_init.
 
 status:-
@@ -85,39 +137,59 @@ status:-
     write('Gold: '), write(Gold), nl, !.
 
 level_up :-
-    player(Level, Class, Item, _, MaxHP, _, MaxMana, Att, Def, _, BatasXP, Gold),
+    player(Level, _, _, _, MaxHP, _, MaxMana, Att, Def, XP, BatasXP, _),
     Levelup is Level + 1,
-    BatasXP1 is BatasXP + round(BatasXP*0.4),
-    set_maxhp(Class, Add_Max_HP),
+    XP1 is XP - BatasXP,
+    BatasXP1 is BatasXP + round(BatasXP*0.2),
+    add_maxhp(Class, Add_Max_HP),
     MaxHP1 is MaxHP + Add_Max_HP,
-    set_maxmana(Class, Add_Max_Mana),
+    add_maxmana(Class, Add_Max_Mana),
     MaxMana1 is MaxMana + Add_Max_Mana,
-    set_att(Class, Add_Att),
+    add_att(Class, Add_Att),
     Att1 is Att + Add_Att,
-    set_def(Class, Add_Def),
+    add_def(Class, Add_Def),
     Def1 is Def + Add_Def,
-    asserta(player(Levelup, Class, Item, MaxHP1, MaxHP1, MaxMana1, MaxMana1, Att1, Def1, 0, BatasXP1, Gold)), !.
+    asserta(player_lvl(Levelup)),
+    asserta(player_hp(MaxHP1, MaxHP1)),
+    asserta(player_mana(MaxMana1, MaxMana1)),
+    asserta(player_att(Att1)),
+    asserta(player_def(Def1)),
+    asserta(xp(XP1, BatasXP1)), !.
+
+/* Operasi terhadap stat pemain */
+check_dead :-
+    player_hp(HP, _),
+    HP =< 0,
+    write('Kamu mati!'), nl.
 
 decr_hp(X) :-
-    player(Level, Class, Item, HP, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold),
+    player_hp(HP, MaxHP),
     HP1 is HP - X,
-    asserta(player(Level, Class, Item, HP1, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold)), !.
+    asserta(player_hp(HP1, MaxHP)), 
+    check_dead, !.
 
 decr_mana(X) :-
-    player(Level, Class, Item, HP, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold),
+    player_mana(Mana, MaxMana),
+    \+ Mana = 0,
     Mana1 is Mana - X,
-    asserta(player(Level, Class, Item, HP, MaxHP, Mana1, MaxMana, Att, Def, XP, BatasXP, Gold)), !.
+    asserta(player_mana(Mana1, MaxMana)), !.
+
+check_levelup:-
+    xp(XP, BatasXP),
+    XP >= BatasXP,
+    level_up, !.
 
 add_xp(X):-
-    player(Level, Class, Item, HP, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold),
+    xp(XP, BatasXP),
     XP1 is XP + X,
-    asserta(player(Level, Class, Item, HP, MaxHP, Mana, MaxMana, Att, Def, XP1, BatasXP, Gold)), !.
+    asserta(xp(XP1, BatasXP)), 
+    check_levelup, !.
 
 add_gold(X):-
-    player(Level, Class, Item, HP, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold),
+    gold(Gold),
     Gold1 is Gold + X,
-    asserta(player(Level, Class, Item, HP, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold1)), !.
+    asserta(gold(Gold1)), !.
 
 changeItem(NewItem):-
-    player(Level, Class, _, HP, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold),
-    asserta(player(Level, Class, NewItem, HP, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold)), !.
+    retractall(player_item(_)),
+    asserta(player_item(NewItem)).
