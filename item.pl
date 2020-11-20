@@ -1,3 +1,5 @@
+:- include('player.pl').
+
 /* Potion(nama, harga) */
 potion('Red Potion', 15).
 potion('Blue Potion', 15).
@@ -34,3 +36,59 @@ item('Magician', 'Armor', 'Beginner Robe', 0, 0).
 item('Magician', 'Armor', 'Magician Robe', 5, 30).
 item('Magician', 'Armor', 'Robe of Light', 12, 50).
 item('Magician', 'Armor', 'Divine Robe', 20, 100).
+
+/* Fungsi-fungsi Use Potion */
+
+/* Fungsi-fungsi Equip Item */
+check_required_lvl(Name):-
+    player_lvl(Level),
+    item(_, _, Name, MinLvl, _),
+    Level >= MinLvl, !.
+
+check_required_lvl(Name):-
+    player_lvl(Level),
+    item(_, _, Name, MinLvl, _),
+    Level < MinLvl,
+    write('Level Tidak Mencukupi!'), nl, !.
+
+unequip_weapon :-
+    player_class(Class),
+    player_weapon(Name),
+    player_att(Att),
+    default_weapon(Class, DefaultWeapon),
+    item(_, _, Name, _, ItemAtt),
+    Att1 is Att - ItemAtt,
+    asserta(player_att(Att1)),
+    asserta(player_weapon(DefaultWeapon)), !.
+
+unequip_armor:-
+    player_class(Class),
+    player_armor(Name),
+    player_def(Def),
+    default_armor(Class, DefaultArmor),
+    item(_, _, Name, _, ItemDef),
+    Def1 is Def - ItemDef,
+    asserta(player_def(Def1)),
+    asserta(player_armor(DefaultArmor)), !.
+
+set_item('Weapon', Name):-
+    unequip_weapon,
+    player_att(Att1),
+    check_required_lvl(Name),
+    item(_, _, Name, _, Att),
+    Att2 is Att + Att1,
+    asserta(player_att(Att2)),
+    asserta(player_weapon(Name)), !.
+
+set_item('Armor', Name):-
+    unequip_armor,   
+    player_def(Def1),
+    check_required_lvl(Name),
+    item(_, _, Name, _, Def),
+    Def2 is Def + Def1,
+    asserta(player_def(Def2)),
+    asserta(player_armor(Name)), !.
+
+equip_item(Name):-
+    item(_, Type, Name, _, _),
+    set_item(Type, Name), !.

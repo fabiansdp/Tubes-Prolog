@@ -8,9 +8,6 @@
 :- dynamic(xp/2).           /* xp(XP, BatasXP) */
 :- dynamic(gold/1).         /* gold(Gold) */
 
-:- include('item.pl').
-
-
 /* Fakta-fakta */
 class(1, 'Swordsman').
 class(2, 'Archer').
@@ -220,56 +217,3 @@ add_gold(X):-
     gold(Gold),
     Gold1 is Gold + X,
     asserta(gold(Gold1)), !.
-
-check_required_lvl(Name):-
-    player_lvl(Level),
-    item(_, _, Name, MinLvl, _),
-    Level >= MinLvl, !.
-
-check_required_lvl(Name):-
-    player_lvl(Level),
-    item(_, _, Name, MinLvl, _),
-    Level < MinLvl,
-    write('Level Tidak Mencukupi!'), nl, !.
-
-unequip_weapon :-
-    player_class(Class),
-    player_weapon(Name),
-    player_att(Att),
-    default_weapon(Class, DefaultWeapon),
-    item(_, _, Name, _, ItemAtt),
-    Att1 is Att - ItemAtt,
-    asserta(player_att(Att1)),
-    asserta(player_weapon(DefaultWeapon)), !.
-
-unequip_armor:-
-    player_class(Class),
-    player_armor(Name),
-    player_def(Def),
-    default_armor(Class, DefaultArmor),
-    item(_, _, Name, _, ItemDef),
-    Def1 is Def - ItemDef,
-    asserta(player_def(Def1)),
-    asserta(player_armor(DefaultArmor)), !.
-
-set_item('Weapon', Name):-
-    unequip_weapon,
-    player_att(Att1),
-    check_required_lvl(Name),
-    item(_, _, Name, _, Att),
-    Att2 is Att + Att1,
-    asserta(player_att(Att2)),
-    asserta(player_weapon(Name)), !.
-
-set_item('Armor', Name):-
-    unequip_armor,   
-    player_def(Def1),
-    check_required_lvl(Name),
-    item(_, _, Name, _, Def),
-    Def2 is Def + Def1,
-    asserta(player_def(Def2)),
-    asserta(player_armor(Name)), !.
-
-equip_item(Name):-
-    item(_, Type, Name, _, _),
-    set_item(Type, Name), !.
