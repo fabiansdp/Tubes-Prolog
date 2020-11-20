@@ -38,6 +38,15 @@ item('Magician', 'Armor', 'Robe of Light', 12, 50).
 item('Magician', 'Armor', 'Divine Robe', 20, 100).
 
 /* Fungsi-fungsi Use Potion */
+use_potion('Red Potion'):-
+    player_hp(HP, MaxHP),
+    HP1 is HP + 30,
+    (HP1 > MaxHP -> asserta(player_hp(MaxHP, MaxHP)), ! ; asserta(player_hp(HP1, MaxHP)), !).
+
+use_potion('Blue Potion'):-
+    player_mana(Mana, MaxMana),
+    Mana1 is Mana + 40,
+    (Mana1 > MaxMana -> asserta(player_mana(MaxMana, MaxMana)), ! ; asserta(player_mana(Mana1, MaxMana)), !).
 
 /* Fungsi-fungsi Equip Item */
 check_required_lvl(Name):-

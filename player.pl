@@ -144,8 +144,6 @@ player_init :-
 
 
 /* Commands */
-start:- player_init.
-
 status:-
     player(Level, Class, Weapon, Armor, HP, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold),
     write('Level: '), write(Level), nl,
