@@ -162,6 +162,10 @@ status:-
     write('XP: '), write(XP), write('/'), write(BatasXP), nl,
     write('Gold: '), write(Gold), nl, !.
 
+write_xp :-
+    xp(XP, BatasXP),
+    write('XP: '), write(XP), write('/'), write(BatasXP), !.
+
 level_up :-
     player(Level, _, _, _, _, MaxHP, _, MaxMana, Att, Def, XP, BatasXP, _),
     Levelup is Level + 1,
@@ -180,7 +184,9 @@ level_up :-
     asserta(player_mana(MaxMana1, MaxMana1)),
     asserta(player_att(Att1)),
     asserta(player_def(Def1)),
-    asserta(xp(XP1, BatasXP1)), !.
+    asserta(xp(XP1, BatasXP1)),
+    write('Selamat Anda naik ke level '), write(Levelup), nl,
+    write_xp, !.
 
 /* Operasi terhadap stat pemain */
 check_dead :-
@@ -202,13 +208,12 @@ decr_mana(X) :-
 
 check_levelup:-
     xp(XP, BatasXP),
-    XP >= BatasXP,
-    level_up, !.
+    (XP >= BatasXP -> level_up ; write_xp), !.
 
 add_xp(X):-
     xp(XP, BatasXP),
     XP1 is XP + X,
-    asserta(xp(XP1, BatasXP)), 
+    asserta(xp(XP1, BatasXP)),
     check_levelup, !.
 
 add_gold(X):-
@@ -227,7 +232,28 @@ check_required_lvl(Name):-
     Level < MinLvl,
     write('Level Tidak Mencukupi!'), nl, !.
 
+unequip_weapon :-
+    player_class(Class),
+    player_weapon(Name),
+    player_att(Att),
+    default_weapon(Class, DefaultWeapon),
+    item(_, _, Name, _, ItemAtt),
+    Att1 is Att - ItemAtt,
+    asserta(player_att(Att1)),
+    asserta(player_weapon(DefaultWeapon)), !.
+
+unequip_armor:-
+    player_class(Class),
+    player_armor(Name),
+    player_def(Def),
+    default_armor(Class, DefaultArmor),
+    item(_, _, Name, _, ItemDef),
+    Def1 is Def - ItemDef,
+    asserta(player_def(Def1)),
+    asserta(player_armor(DefaultArmor)), !.
+
 set_item('Weapon', Name):-
+    unequip_weapon,
     player_att(Att1),
     check_required_lvl(Name),
     item(_, _, Name, _, Att),
@@ -235,7 +261,8 @@ set_item('Weapon', Name):-
     asserta(player_att(Att2)),
     asserta(player_weapon(Name)), !.
 
-set_item('Armor', Name):-   
+set_item('Armor', Name):-
+    unequip_armor,   
     player_def(Def1),
     check_required_lvl(Name),
     item(_, _, Name, _, Def),
@@ -243,6 +270,6 @@ set_item('Armor', Name):-
     asserta(player_def(Def2)),
     asserta(player_armor(Name)), !.
 
-change_item(Name):-
+equip_item(Name):-
     item(_, Type, Name, _, _),
     set_item(Type, Name), !.
