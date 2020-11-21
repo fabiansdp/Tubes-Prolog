@@ -7,7 +7,10 @@
 :- dynamic(enemy_name/1). /* enemy_name(Name) */
 :- dynamic(turn/1). /* Turn(0) untuk player, turn(1) untuk enemy */
 :- dynamic(battle_status/1). /*0 untuk battle selesai, 1 untuk battle berjalan*/
-
+:- dynamic(skill_cd/1). /* Skill Cooldown yaitu 3 turn */
+:- dynamic(effect_cd/1). /* Cooldown untuk effect special skill */
+:- dynamic(att_modifier/1). /* Nyimpan modifier attack */
+:- dynamic(def_modifier/1). /* Nyimpan modifier defense */
 
 /* Generate Musuh */
 generate_enemy(1, 'Slime').
@@ -76,6 +79,39 @@ decr_mana(X) :-
         asserta(player_mana(Mana1, MaxMana))
     ).
 
+decr_cd :-
+    skill_cd(CD),
+    CD1 is CD - 1,
+    (CD1 == 0 ->
+        asserta(skill_cd(CD1)),
+        write('Special Attack dapat dipakai lagi\n\n')
+
+    ; asserta(skill_cd(CD1))    
+    ).
+
+normal_stat('Rage') :-
+    player_att(Att),
+    player_def(Def),
+    att_modifier(AttMod),
+    def_modifier(DefMod),
+    Att1 is Att - AttMod,
+    Def1 is Def - DefMod,
+    asserta(player_att(Att1)),
+    asserta(player_def(Def1)),
+    write('Efek spesial telah hilang\n\n').
+
+decr_effect :-
+    effect_cd(CD),
+    CD1 is CD - 1,
+    (CD1 == 0 ->
+        asserta(effect_cd(CD1)),
+        player_class(Class),
+        special_skill(Class, Name),
+        normal_stat(Name)
+
+    ; asserta(effect_cd(CD1))    
+    ).
+
 decr_enemy_hp(X) :-
     enemy_hp(HP, MaxHP), 
     HP1 is HP - X,
@@ -91,6 +127,10 @@ attack :-
         decr_enemy_hp(Damage),
         retractall(turn(_)),
         asserta(turn(0)),
+        skill_cd(CD),
+        (CD > 0 -> decr_cd ; true),
+        effect_cd(Effect),
+        (Effect > 0 -> decr_effect ; true),
         battle_mechanism
 
     ; write('Kamu tidak dalam battle!\n')
@@ -109,6 +149,24 @@ lari :-
     ).
 
 skill_effect(Skill) :-
+    Skill == 'Rage',
+    player_att(Att),
+    player_def(Def),
+    player_lvl(Level),
+    AttMod is Att * (0.5+0.1*(Level-1)),
+    DefMod is Def * (0.5+0.1*(Level-1)),
+    Att1 is Att + AttMod,
+    Def1 is Def + DefMod,
+    asserta(player_att(Att1)),
+    asserta(player_def(Def1)),
+    asserta(att_modifier(AttMod)),
+    asserta(def_modifier(DefMod)),
+    asserta(skill_cd(3)),
+    asserta(effect_cd(2)),
+    write('Rage!!!\n\n'), !.
+
+
+skill_effect(Skill) :-
     Skill == 'Power Shot',
     player_att(Att),
     player_mana(Mana, _),
@@ -116,6 +174,7 @@ skill_effect(Skill) :-
     Mana1 is Mana - 40,
     decr_mana(Mana1),
     decr_enemy_hp(Damage),
+    asserta(skill_cd(3)),
     write('Power Shot!!\n\n'), !.
 
 specialattack :-
@@ -169,8 +228,15 @@ do('heal') :-
 
 do('specialattack'):-
     (battle_status(1) ->
-        specialattack,
-        battle_mechanism
+        skill_cd(CD),
+        (CD == 0 ->
+            specialattack,
+            battle_mechanism
+        
+        ; 
+            write('Skill masih cooldown!\n\n'),
+            battle_mechanism
+        )
 
     ; 
         write('Kamu tidak di dalam battle!\n\n'), fail
@@ -196,20 +262,27 @@ battle_mechanism :-
     battle_status(Status),
     (Status == 1 ->
         turn(Turn),  
-
         (Turn == 1 -> 
             read_command, !
         
         ; enemy_attack
         ) 
 
-    ; write('Battle selesai!')
+    ; 
+        write('Battle selesai!'),
+        player_class(Class),
+        special_skill(Class, Name),
+        normal_stat(Name)
     ), !.
 
 /* Fungsi Battle */
 battle :-
     asserta(battle_status(1)),
     asserta(turn(1)),
+    asserta(skill_cd(0)),
+    asserta(effect_cd(0)),
+    asserta(att_modifier(0)),
+    asserta(def_modifier(0)),
     random(1, 4, X),
     generate_enemy(X, Enemy),
     setup_enemy(Enemy),

@@ -15,3 +15,4 @@
 Kamu adalah seorang yang terdampar di sebuah pulau terpencil. Setelah bertanya-tanya ke warga setempat, masalah utama warga itu adalah Naga Hitam yang memperbudak mereka. Bantulah mereka untuk membasmi naga itu!!!
 
 ### Cara Memulai
+TBA

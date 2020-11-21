@@ -156,7 +156,7 @@ status:-
     write('Attack: '), write(Att), nl,
     write('Defense: '), write(Def), nl,
     write('XP: '), write(XP), write('/'), write(BatasXP), nl,
-    write('Gold: '), write(Gold), nl, !.
+    write('Gold: '), write(Gold), nl, nl, !.
 
 write_xp :-
     xp(XP, BatasXP),
@@ -202,4 +202,6 @@ add_gold(X):-
 
 heal :-
     player_hp(_,MaxHP),
-    asserta(player_hp(MaxHP,MaxHP)), !.
+    player_mana(_,MaxMana),
+    asserta(player_hp(MaxHP,MaxHP)), 
+    asserta(player_mana(MaxMana, MaxMana)), !.
