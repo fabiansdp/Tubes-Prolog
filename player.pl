@@ -1,4 +1,5 @@
 :- dynamic(player_lvl/1).   /* player_lvl(Level) */
+:- dynamic(player_class/1). /* player_class(Class) */
 :- dynamic(player_weapon/1).  /* player_weapon(weapon) */
 :- dynamic(player_armor/1).  /* player_armor(armor) */
 :- dynamic(player_hp/2).    /* player_hp(HP, MaxHP) */
@@ -159,7 +160,7 @@ status:-
 
 write_xp :-
     xp(XP, BatasXP),
-    write('XP: '), write(XP), write('/'), write(BatasXP), !.
+    write('XP: '), write(XP), write('/'), write(BatasXP), nl,nl, !.
 
 level_up :-
     player(Level, _, _, _, _, MaxHP, _, MaxMana, Att, Def, XP, BatasXP, _),
@@ -184,23 +185,6 @@ level_up :-
     write_xp, !.
 
 /* Operasi terhadap stat pemain */
-check_dead :-
-    player_hp(HP, _),
-    HP =< 0,
-    write('Kamu mati!'), nl.
-
-decr_hp(X) :-
-    player_hp(HP, MaxHP),
-    HP1 is HP - X,
-    asserta(player_hp(HP1, MaxHP)), 
-    check_dead, !.
-
-decr_mana(X) :-
-    player_mana(Mana, MaxMana),
-    \+ Mana = 0,
-    Mana1 is Mana - X,
-    asserta(player_mana(Mana1, MaxMana)), !.
-
 check_levelup:-
     xp(XP, BatasXP),
     (XP >= BatasXP -> level_up ; write_xp), !.
@@ -215,3 +199,7 @@ add_gold(X):-
     gold(Gold),
     Gold1 is Gold + X,
     asserta(gold(Gold1)), !.
+
+heal :-
+    player_hp(_,MaxHP),
+    asserta(player_hp(MaxHP,MaxHP)), !.
