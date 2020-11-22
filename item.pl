@@ -1,10 +1,10 @@
 :- include('player.pl').
 
-/* Potion(nama, harga) */
-potion('Red Potion', 15).
-potion('Blue Potion', 15).
-potion('Rage Potion', 10).
-potion('Defense Potion', 10).
+/* Untuk potion: Item(class, type, nama, harga, +effect) */
+item(_, 'Potion', 'Red Potion', 15, 30).
+item(_, 'Potion', 'Blue Potion', 15, 40).
+item(_, 'Potion', 'Rage Potion', 10, 30).
+item(_, 'Potion', 'Defense Potion', 10, 20).
 
 /* Item(class, type, nama, minlvl, +effect) */
 item('Swordsman', 'Weapon', 'Beginner Sword', 0, 0).
