@@ -198,10 +198,12 @@ add_xp(X):-
 add_gold(X):-
     gold(Gold),
     Gold1 is Gold + X,
-    asserta(gold(Gold1)), !.
+    asserta(gold(Gold1)),
+    write('Gold: '), write(Gold1), nl, !.
 
 heal :-
     player_hp(_,MaxHP),
     player_mana(_,MaxMana),
     asserta(player_hp(MaxHP,MaxHP)), 
-    asserta(player_mana(MaxMana, MaxMana)), !.
+    asserta(player_mana(MaxMana, MaxMana)), 
+    write('Semua lukamu hilang!\n\n'), !.
