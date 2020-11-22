@@ -71,14 +71,15 @@ decr_hp(X) :-
     check_dead, !.
 
 add_hp(X) :-
-    write('HP kamu bertambah sebanyak '), write(X), nl,
+    write('HP kamu bertambah sebanyak '), write(X), write('!'), nl,
     player_hp(HP, MaxHP),
-    HP1 is HP - X,
+    HP1 is HP + X,
     (HP1 > MaxHP ->
         asserta(player_hp(MaxHP, MaxHP))
     ;
         asserta(player_hp(HP1, MaxHP))
-    ).
+    ),
+    hp_status, !.
 
 decr_mana(X) :-
     player_mana(Mana, MaxMana),
@@ -95,7 +96,7 @@ decr_cd :-
     ; asserta(skill_cd(CD1))    
     ).
 
-normalize_stat('Rage') :-
+normalize_stat :-
     normal_stat(Att,Def),
     asserta(player_att(Att)),
     asserta(player_def(Def)).
@@ -105,9 +106,7 @@ decr_effect :-
     CD1 is CD - 1,
     (CD1 == 0 ->
         asserta(effect_cd(CD1)),
-        player_class(Class),
-        special_skill(Class, Name),
-        normalize_stat(Name),
+        normalize_stat,
         write('Efek spesial telah hilang\n\n')
 
     ; asserta(effect_cd(CD1))    
@@ -209,6 +208,7 @@ skill_effect('Divine Light') :-
     ;
         decr_mana(ManaDecr),
         write('Divine Light!!!\n'), 
+        write('Stat kamu bertambah untuk 2 turn!\n'),
         HPMod is HP * (0.4 + 0.01*(Level-1)),
         add_hp(HPMod),
         AttMod is 20 + 5*(Level-1),
@@ -306,7 +306,6 @@ read_command :-
 /* Battle Mechanism */
 battle_mechanism :-
     battle_status(Status),
-    write(Status), write('Jancok'), nl,
     (Status == 1 ->
         turn(Turn),  
         (Turn == 1 -> 
@@ -316,9 +315,7 @@ battle_mechanism :-
         ) 
 
     ;   
-        player_class(Class),
-        special_skill(Class, Name),
-        normalize_stat(Name),
+        normalize_stat,
         write('Battle Selesai!')
     ), !.
 
