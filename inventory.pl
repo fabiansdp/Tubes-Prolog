@@ -9,6 +9,7 @@
 set_invent :-
     asserta(maxInventory(100)). /*max inventory = 100*/
 
+
 /*Menghitung jumlah item yang ada di dalam Inventory*/
 banyakItemInventory(Item, Jml) :-
     findall(Item,itemInv(_, _, Item, _, _),ListInvent),
@@ -23,6 +24,7 @@ addItemInv(_) :-
     maxInventory(Max),
     (Jumlah >= Max),
     write("Inventory penuh!"), nl, !, fail.
+
 
 /*Inventori muat*/
 addItemInv(Item) :-
