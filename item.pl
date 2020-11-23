@@ -1,5 +1,3 @@
-:- include('player.pl').
-
 /* Untuk potion: Item(class, type, nama, harga, +effect) */
 item(_, 'Potion', 'Red Potion', 15, 30).
 item(_, 'Potion', 'Blue Potion', 15, 40).

@@ -1,6 +1,3 @@
-:- include('enemy.pl').
-:- include('player.pl').
-
 :- dynamic(enemy_hp/2). /* enemy_hp(HP, MaxHP) */
 :- dynamic(enemy_att/1). /* enemy_att(Att) */
 :- dynamic(enemy_def/1). /* enemy_def(Def) */
@@ -15,6 +12,7 @@
 generate_enemy(1, 'Slime').
 generate_enemy(2, 'Goblin').
 generate_enemy(3, 'Wolf').
+generate_enemy(4, 'Ancient Black Dragon').
 
 /* Setup enemy */
 setup_enemy(Enemy):-
@@ -147,7 +145,9 @@ attack :-
         (Effect > 0 -> decr_effect ; true),
         battle_mechanism
 
-    ; write('Kamu tidak dalam battle!\n')
+    ; 
+        write('Kamu tidak dalam battle!\n'), 
+        game
     ).
 
 lari :-
@@ -266,70 +266,6 @@ enemy_attack :-
     asserta(turn(1)),
     battle_mechanism, !.
 
-/* Jalankan Command */
-do('attack') :- attack.
-
-do('lari') :- lari.
-
-do('help') :-
-    (battle_status(1) ->
-        write('Daftar Command Battle:\n'),
-        write('1. status\n'),
-        write('2. attack\n'),
-        write('3. specialattack\n'),
-        write('4. lari\n\n'),
-        battle_mechanism
-
-    ; 
-        write('Daftar Command:\n'),
-        write('1. heal\n'),
-        write('2. legend\n'),
-        write('3. status\n'),
-        write('4. inventory\n')
-    ).
-
-do('heal') :-
-    (battle_status(1) ->
-        write('Kamu tidak bisa heal di dalam battle!\n'),
-        write('Gunakan potion yang kamu punya!\n\n'),
-        battle_mechanism
-
-    ; 
-        heal
-    ).
-
-do('specialattack'):-
-    battle_status(Status),
-    (Status == 1 ->
-        skill_cd(CD),
-        (CD == 0 ->
-            specialattack,
-            battle_mechanism
-        
-        ; 
-            write('Skill masih cooldown!\n\n'),
-            battle_mechanism
-        )
-
-    ; 
-        write('Kamu tidak di dalam battle!\n\n')
-    ).
-
-do('status'):-
-    (battle_status(1) ->
-        status,
-        battle_mechanism
-
-    ; 
-        status
-    ).
-
-/* Read Commands */
-read_command :-
-    write('Apa yang ingin kamu lakukan?\n'),
-    read(X), nl,
-    do(X), !.
-
 /* Battle Mechanism */
 battle_mechanism :-
     battle_status(Status),
@@ -343,7 +279,8 @@ battle_mechanism :-
 
     ;   
         normalize_stat,
-        write('Battle Selesai!')
+        write('Battle Selesai!\n\n'),
+        game
     ), !.
 
 /* Fungsi Battle */
@@ -369,3 +306,26 @@ battle(X) :-
     write('HP: '), write(HP), write('/'), write(MaxHP), nl, nl,
     battle_mechanism, !.
 
+boss_fight :-
+    player_att(Att),
+    player_def(Def),
+    retractall(battle_status(_)),
+    retractall(turn(_)),
+    retractall(skill_cd(_)),
+    retractall(effect_cd(_)),
+    retractall(normal_stat(_,_)),
+    asserta(battle_status(1)),
+    asserta(turn(1)),
+    asserta(skill_cd(0)),
+    asserta(effect_cd(0)),
+    asserta(normal_stat(Att, Def)),
+    generate_enemy(4, Enemy),
+    setup_enemy(Enemy),
+    enemy_name(Enemy), 
+    enemy_hp(HP, MaxHP), nl,
+    write('=== BOSS FIGHT =====\n'),
+    write('Kalahkan Naga Hitam!\n\n'),
+    write('Musuhmu adalah '), 
+    write(Enemy), nl, 
+    write('HP: '), write(HP), write('/'), write(MaxHP), nl, nl,
+    battle_mechanism, !.

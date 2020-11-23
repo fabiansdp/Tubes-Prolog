@@ -130,7 +130,7 @@ player(Level, Class, Weapon, Armor, HP, MaxHP, Mana, MaxMana, Att, Def, XP, Bata
 response_class(Class):-
     write('Kamu pilih '),
     write(Class),
-    write(', misi kamu adalah mengalahkan naga!.'), nl, !.
+    write('!'), nl, nl, !.
 
 /* Inisialisasi Player */
 player_init :-

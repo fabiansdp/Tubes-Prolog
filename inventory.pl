@@ -1,7 +1,7 @@
 :- include('item.pl').
 
 
-:- dynamic(itemInv/5). /* Item(class, type, nama, minlvl, +effect) atau Untuk potion: Item(class, type, nama, harga, +effect) */
+:- dynamic(itemInv/2). /* itemInv(Item,Jumlah) */
 :- dynamic(maxInventory/1). /*max inventory*/
 
 
@@ -12,7 +12,7 @@ set_invent :-
 
 /*Menghitung jumlah item yang ada di dalam Inventory*/
 banyakItemInventory(Item, Jml) :-
-    findall(Item,itemInv(_, _, Item, _, _),ListInvent),
+    findall(Item,itemInv(Item, _),ListInvent),
 	length(ListInvent,Jml).
 
 
@@ -27,27 +27,44 @@ addItemInv(_) :-
 
 
 /*Inventori muat*/
+/* Belom ada item yang sama */
 addItemInv(Item) :-
     item(_, _, Item, _, _),
-    asserta(itemInv(_, _, Item, _, _)), !.
+    \+itemInv(Item,_),
+    asserta(itemInv(Item,1)),!.
+
+/* Sudah ada item yang sama */
+addItemInv(Item) :-
+    itemInv(Item, X),
+    Y is X + 1,
+    retract(itemInv(Item,X)),
+    asserta(itemInv(Item,Y)), !.
 
 
 
 /*MEMBUANG ATAU MENGGUNAKAN ITEM DARI DALAM INVENTORY*/
 /*Item tidak ada di Inventory*/
-delItem(Item) :-
-    \+itemInv(_, _, Item, _, _), !, fail.
+delItemInv(Item) :-
+    \+itemInv(Item,_), !, fail.
 
 /*Item ada di Inventory*/
-delItem(Item) :-
-    itemInv(_, _, Item, _, _),
-    retract(itemInv(_, _, Item, _, _)), !.
+/* Jumlah item yang akan di delete ada 1 */
+delItemInv(Item) :-
+    itemInv(Item,X),
+    X =:= 1,
+    retract(itemInv(Item,X)), !.
+
+/* Jumlah item yang akan di delete lebih dari 1 */
+delItemInv(Item) :-
+    itemInv(Item,X),
+    Y is X - 1,
+    retract(itemInv(Item,X)),
+    asserta(itemInv(Item,Y)), !.
+
 
 
 /* Commands */
 inventory :-
-    write('Your Inventory: '), nl,!,
-    itemInv(_, _, Item, _, _),
-    banyakItemInventory(Item, Jml),
+    write('Your Inventory: '), nl,
+    itemInv(Item,Jml),
     write(Jml), write(' '),write(Item), nl, fail.
-
