@@ -47,7 +47,14 @@ check_dead_enemy :-
         add_gold(Gold),
         add_xp(XP),
         retract(battle_status(_)),
-        asserta(battle_status(0))
+        asserta(battle_status(0)),
+        (enemy_name('Ancient Black Dragon') ->
+            write('Kamu Telah Membasmi Naga Hitam!!\n\n'),
+            retract(enginestats(_)),
+            asserta(enginestats(0))
+        ;
+            true
+        )
 
     ; enemy_hp_status   
     ).
@@ -58,6 +65,8 @@ check_dead :-
         write('Kamu mati!\n\n'),
         write('GAME OVER!!!\n\n'),
         retract(battle_status(_)),
+        retract(enginestats(_)),
+        asserta(enginestats(0)),
         asserta(battle_status(0))
 
     ; hp_status
@@ -279,7 +288,6 @@ battle_mechanism :-
 
     ;   
         normalize_stat,
-        write('Battle Selesai!\n\n'),
         game
     ), !.
 
