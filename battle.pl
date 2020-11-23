@@ -12,6 +12,7 @@
 generate_enemy(1, 'Slime').
 generate_enemy(2, 'Goblin').
 generate_enemy(3, 'Wolf').
+generate_enemy(4, 'Ancient Black Dragon').
 
 /* Setup enemy */
 setup_enemy(Enemy):-
@@ -278,7 +279,7 @@ battle_mechanism :-
 
     ;   
         normalize_stat,
-        write('Battle Selesai!'),
+        write('Battle Selesai!\n\n'),
         game
     ), !.
 
@@ -305,3 +306,26 @@ battle(X) :-
     write('HP: '), write(HP), write('/'), write(MaxHP), nl, nl,
     battle_mechanism, !.
 
+boss_fight :-
+    player_att(Att),
+    player_def(Def),
+    retractall(battle_status(_)),
+    retractall(turn(_)),
+    retractall(skill_cd(_)),
+    retractall(effect_cd(_)),
+    retractall(normal_stat(_,_)),
+    asserta(battle_status(1)),
+    asserta(turn(1)),
+    asserta(skill_cd(0)),
+    asserta(effect_cd(0)),
+    asserta(normal_stat(Att, Def)),
+    generate_enemy(4, Enemy),
+    setup_enemy(Enemy),
+    enemy_name(Enemy), 
+    enemy_hp(HP, MaxHP), nl,
+    write('=== BOSS FIGHT =====\n'),
+    write('Kalahkan Naga Hitam!\n\n'),
+    write('Musuhmu adalah '), 
+    write(Enemy), nl, 
+    write('HP: '), write(HP), write('/'), write(MaxHP), nl, nl,
+    battle_mechanism, !.
