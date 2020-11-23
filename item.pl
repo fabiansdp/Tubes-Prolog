@@ -41,14 +41,34 @@ item('Magician', 'Armor', 'Divine Robe', 20, 100).
 use_potion('Red Potion'):-
     player_hp(HP, MaxHP),
     HP1 is HP + 30,
-    (HP1 > MaxHP -> asserta(player_hp(MaxHP, MaxHP)), ! ; asserta(player_hp(HP1, MaxHP)), !).
+    retract(player_hp(_,_)),
+    (HP1 > MaxHP -> 
+        asserta(player_hp(MaxHP, MaxHP)), ! 
+    ; 
+        asserta(player_hp(HP1, MaxHP)), !
+    ).
 
 use_potion('Blue Potion'):-
     player_mana(Mana, MaxMana),
     Mana1 is Mana + 40,
-    (Mana1 > MaxMana -> asserta(player_mana(MaxMana, MaxMana)), ! ; asserta(player_mana(Mana1, MaxMana)), !).
+    retract(player_mana(_,_)),
+    (Mana1 > MaxMana -> 
+        asserta(player_mana(MaxMana, MaxMana)), ! 
+    ; 
+        asserta(player_mana(Mana1, MaxMana)), !
+    ).
 
 /* Fungsi-fungsi Equip Item */
+check_required_class(Name):-
+    player_class(Class),
+    item(ItemClass,_,Name,_,_),
+    (ItemClass == Class ->
+        true
+    ;
+        write('Item bukan untuk Class kamu!\n\n'), !, fail
+    ).
+
+
 check_required_lvl(Name):-
     player_lvl(Level),
     item(_, _, Name, MinLvl, _),
@@ -58,7 +78,7 @@ check_required_lvl(Name):-
     player_lvl(Level),
     item(_, _, Name, MinLvl, _),
     Level < MinLvl,
-    write('Level Tidak Mencukupi!'), nl, !.
+    write('Level Tidak Mencukupi!'), nl, !, fail.
 
 unequip_weapon :-
     player_class(Class),
@@ -67,6 +87,8 @@ unequip_weapon :-
     default_weapon(Class, DefaultWeapon),
     item(_, _, Name, _, ItemAtt),
     Att1 is Att - ItemAtt,
+    retract(player_att(_)),
+    retract(player_weapon(_)),
     asserta(player_att(Att1)),
     asserta(player_weapon(DefaultWeapon)), !.
 
@@ -77,27 +99,36 @@ unequip_armor:-
     default_armor(Class, DefaultArmor),
     item(_, _, Name, _, ItemDef),
     Def1 is Def - ItemDef,
+    retract(player_def(_)),
+    retract(player_armor(_,_)),
     asserta(player_def(Def1)),
     asserta(player_armor(DefaultArmor)), !.
 
 set_item('Weapon', Name):-
+    check_required_class(Name),
+    check_required_lvl(Name),
     unequip_weapon,
     player_att(Att1),
-    check_required_lvl(Name),
     item(_, _, Name, _, Att),
     Att2 is Att + Att1,
+    retract(player_att(_)),
+    retract(player_weapon(_)),
     asserta(player_att(Att2)),
     asserta(player_weapon(Name)), !.
 
 set_item('Armor', Name):-
+    check_required_class(Name),
+    check_required_lvl(Name),
     unequip_armor,   
     player_def(Def1),
-    check_required_lvl(Name),
     item(_, _, Name, _, Def),
     Def2 is Def + Def1,
+    retract(player_def(_)),
+    retract(player_armor(_)),
     asserta(player_def(Def2)),
     asserta(player_armor(Name)), !.
 
 equip_item(Name):-
     item(_, Type, Name, _, _),
-    set_item(Type, Name), !.
+    set_item(Type, Name), 
+    write(Name), write(' berhasil di-equip!\n\n'), !.
