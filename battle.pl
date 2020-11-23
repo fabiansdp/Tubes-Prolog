@@ -49,6 +49,7 @@ check_dead_enemy :-
         retract(battle_status(_)),
         asserta(battle_status(0)),
         (enemy_name('Ancient Black Dragon') ->
+            write('Kamu Telah Membasmi Naga Hitam!!\n\n'),
             retract(enginestats(_)),
             asserta(enginestats(0))
         ;

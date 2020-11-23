@@ -1,12 +1,14 @@
-:- include('item.pl').
-
-
 :- dynamic(itemInv/2). /* itemInv(Item,Jumlah) */
 :- dynamic(maxInventory/1). /*max inventory*/
 
 
 /*Fungsi set inventory awal*/
 set_invent :-
+    addItemInv('Red Potion'),
+    addItemInv('Red Potion'),
+    addItemInv('Red Potion'),
+    addItemInv('Red Potion'),
+    addItemInv('Red Potion'),
     asserta(maxInventory(100)). /*max inventory = 100*/
 
 

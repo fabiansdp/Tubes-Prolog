@@ -156,14 +156,16 @@ status:-
     write('Attack: '), write(Att), nl,
     write('Defense: '), write(Def), nl,
     write('XP: '), write(XP), write('/'), write(BatasXP), nl,
-    write('Gold: '), write(Gold), nl, nl, !.
+    write('Gold: '), write(Gold), nl, nl, !,
+    (battle_status(1) -> battle_mechanism ; game).
 
 write_xp :-
     xp(XP, BatasXP),
     write('XP: '), write(XP), write('/'), write(BatasXP), nl,nl, !.
 
 level_up :-
-    player(Level, _, _, _, _, MaxHP, _, MaxMana, Att, Def, XP, BatasXP, _),
+    player(Level, _, _, _, _, MaxHP, _, MaxMana, _, _, XP, BatasXP, _),
+    normal_stat(Att, Def),
     Levelup is Level + 1,
     XP1 is XP - BatasXP,
     BatasXP1 is BatasXP + round(BatasXP*0.2),
@@ -181,11 +183,13 @@ level_up :-
     retractall(player_att(_)),
     retractall(player_def(_)),
     retractall(xp(_, _)),
+    retractall(normal_stat(_,_)),
     asserta(player_lvl(Levelup)),
     asserta(player_hp(MaxHP1, MaxHP1)),
     asserta(player_mana(MaxMana1, MaxMana1)),
     asserta(player_att(Att1)),
     asserta(player_def(Def1)),
+    asserta(normal_stat(Att1,Def1)),
     asserta(xp(XP1, BatasXP1)),
     write('Selamat Anda naik ke level '), write(Levelup), nl,
     write_xp, !.
@@ -216,4 +220,5 @@ heal :-
     retract(player_mana(_,_)),
     asserta(player_hp(MaxHP,MaxHP)), 
     asserta(player_mana(MaxMana, MaxMana)), 
-    write('Semua lukamu hilang!\n\n'), !.
+    write('Semua lukamu hilang!\n\n'), 
+    game, !.

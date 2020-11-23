@@ -13,6 +13,7 @@ enginestats(0).
 
 game :-
     enginestats(1),
+    print_all,
     write('Apa yang ingin kamu lakukan?\n'), !.
 
 game :-
