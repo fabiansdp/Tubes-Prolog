@@ -8,6 +8,7 @@
 :- include('command.pl').
 :- include('map.pl').
 :- include('move.pl').
+:- include('store.pl').
 
 enginestats(0).
 

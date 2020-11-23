@@ -38,8 +38,7 @@ item('Magician', 'Armor', 'Divine Robe', 20, 100).
 /* Fungsi-fungsi Use Potion */
 use_potion('Red Potion'):-
     \+itemInv('Red Potion', _),
-    write('Tidak punya Red potion!\n'),
-    battle_mechanism.
+    write('Tidak punya Red potion!\n').
 
 use_potion('Red Potion'):-
     itemInv('Red Potion', _),
@@ -58,8 +57,7 @@ use_potion('Red Potion'):-
 
 use_potion('Blue Potion'):-
     \+itemInv('Blue Potion',_),
-    write('Tidak punya Blue potion!\n'),
-    battle_mechanism.
+    write('Tidak punya Blue potion!\n').
 
 use_potion('Blue Potion'):-
     itemInv('Blue Potion',_),
@@ -78,8 +76,7 @@ use_potion('Blue Potion'):-
 
 use_potion('Enrage Potion'):-
     \+itemInv('Enrage Potion',_),
-    write('Tidak punya enrage potion!\n\n'),
-    battle_mechanism.
+    write('Tidak punya enrage potion!\n\n').
 
 use_potion('Enrage Potion'):-
     itemInv('Enrage Potion',_),
@@ -94,8 +91,7 @@ use_potion('Enrage Potion'):-
 
 use_potion('Defense Potion'):- 
     \+itemInv('Defense Potion',_),
-    write('Tidak punya defense potion!\n'),
-    battle_mechanism.
+    write('Tidak punya defense potion!\n').
 
 use_potion('Defense Potion'):-   
     itemInv('Defense Potion',_),
