@@ -2,28 +2,33 @@
 
 
 :- dynamic(itemInv/2). /* itemInv(Item,Jumlah) */
-:- dynamic(maxInventory/1). /*max inventory*/
 
-
-/*Fungsi set inventory awal*/
-set_invent :-
-    asserta(maxInventory(100)). /*max inventory = 100*/
-
-
-/*Menghitung jumlah item yang ada di dalam Inventory*/
-banyakItemInventory(Item, Jml) :-
-    findall(Item,itemInv(Item, _),ListInvent),
-	length(ListInvent,Jml).
+/*=============================================================*/
+                        /*FAKTA*/
+maxInventory(100).
+/*=============================================================*/
 
 
 
-/*MEMASUKAN ITEM KE DALAM INVENTORY*/
+/*=============================================================*/
+                            /*COMMAND*/
+/*Command untuk membuka inventory*/
+inventory :-
+    write('Inventory: '), nl,
+    itemInv(Item,Jml),
+    write(Jml), write(' '),write(Item), nl, fail.
+/*=============================================================*/
+
+
+
+/*=============================================================*/
+                            /*ADD ITEM TO INVENTORY*/
 /*Inventori tidak muat*/
 addItemInv(_) :-
     banyakItemInventory(_, Jumlah),
     maxInventory(Max),
     (Jumlah >= Max),
-    write("Inventory penuh!"), nl, !, fail.
+    write('Inventory penuh!'), nl, !, fail.
 
 
 /*Inventori muat*/
@@ -39,10 +44,13 @@ addItemInv(Item) :-
     Y is X + 1,
     retract(itemInv(Item,X)),
     asserta(itemInv(Item,Y)), !.
+/*=============================================================*/
 
 
 
-/*MEMBUANG ATAU MENGGUNAKAN ITEM DARI DALAM INVENTORY*/
+
+/*=============================================================*/
+            /* DEL/USE ITEM FROM INVENTORY */
 /*Item tidak ada di Inventory*/
 delItemInv(Item) :-
     \+itemInv(Item,_), !, fail.
@@ -60,11 +68,15 @@ delItemInv(Item) :-
     Y is X - 1,
     retract(itemInv(Item,X)),
     asserta(itemInv(Item,Y)), !.
+/*=============================================================*/
 
 
 
-/* Commands */
-inventory :-
-    write('Your Inventory: '), nl,
-    itemInv(Item,Jml),
-    write(Jml), write(' '),write(Item), nl, fail.
+
+/*=============================================================*/
+                    /*FUNGSI TAMBAHAN*/
+/*Menghitung jumlah item yang ada di dalam Inventory*/
+banyakItemInventory(Item, Jml) :-
+    findall(Item,itemInv(Item, _),ListInvent),
+	length(ListInvent,Jml).
+/*=============================================================*/
