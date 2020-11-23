@@ -1,29 +1,34 @@
 :- dynamic(enginestats/1).
+
+:- include('player.pl').
+:- include('battle.pl').
+:- include('enemy.pl').
+:- include('item.pl').
+:- include('inventory.pl').
+:- include('command.pl').
+
 enginestats(0).
-start :-
+
+game :-
     enginestats(1),
-    write('in game situation'),nl,!;
-    write('selamat datang di tokemon'),nl,
-    write('ketikkan help untuk bantuan'),nl,
-    write('ketikkan start sekali lagi untuk mulai game'),nl,
-    asserta(enginestats(1)),!.
+    read_command.
 
-    
+game :-
+    enginestats(0),
+    write('The End\n\n').
 
-help :-
-    write('daftar perintah : '),nl,
-    write('w untuk maju'),nl,
-    write('a untuk kanan'),nl,
-    write('s untuk mundur'),nl,
-    write('d untuk kiri'),nl,
-    write(''),nl,
-    write(''),nl,
-    write(''),nl,
-    write(''),nl.
-
-
-
+start :-
+    retract(enginestats(_)),
+    asserta(enginestats(1)),
+    write('SELAMAT DATANG!!'),nl,
+    write('Masyarakat kami sudah bertahun-tahun takut dengan kekuatan Naga Hitam'),nl,
+    write('Tolong bantulah kami untuk membasmi Naga Hitam!'), nl,nl,
+    set_invent,
+    player_init,
+    read_command.
 
 quit:-
-    write('thanks for using this program'),nl,
+    retractall(enginestats(_)),
+    asserta(enginestats(0)),
+    write('Terima kasih sudah bermain!'),nl,
     write('arigatouuu'),nl.

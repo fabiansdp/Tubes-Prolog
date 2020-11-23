@@ -1,6 +1,3 @@
-:- include('enemy.pl').
-:- include('player.pl').
-
 :- dynamic(enemy_hp/2). /* enemy_hp(HP, MaxHP) */
 :- dynamic(enemy_att/1). /* enemy_att(Att) */
 :- dynamic(enemy_def/1). /* enemy_def(Def) */
@@ -147,7 +144,9 @@ attack :-
         (Effect > 0 -> decr_effect ; true),
         battle_mechanism
 
-    ; write('Kamu tidak dalam battle!\n')
+    ; 
+        write('Kamu tidak dalam battle!\n'), 
+        game
     ).
 
 lari :-
@@ -266,70 +265,6 @@ enemy_attack :-
     asserta(turn(1)),
     battle_mechanism, !.
 
-/* Jalankan Command */
-do('attack') :- attack.
-
-do('lari') :- lari.
-
-do('help') :-
-    (battle_status(1) ->
-        write('Daftar Command Battle:\n'),
-        write('1. status\n'),
-        write('2. attack\n'),
-        write('3. specialattack\n'),
-        write('4. lari\n\n'),
-        battle_mechanism
-
-    ; 
-        write('Daftar Command:\n'),
-        write('1. heal\n'),
-        write('2. legend\n'),
-        write('3. status\n'),
-        write('4. inventory\n')
-    ).
-
-do('heal') :-
-    (battle_status(1) ->
-        write('Kamu tidak bisa heal di dalam battle!\n'),
-        write('Gunakan potion yang kamu punya!\n\n'),
-        battle_mechanism
-
-    ; 
-        heal
-    ).
-
-do('specialattack'):-
-    battle_status(Status),
-    (Status == 1 ->
-        skill_cd(CD),
-        (CD == 0 ->
-            specialattack,
-            battle_mechanism
-        
-        ; 
-            write('Skill masih cooldown!\n\n'),
-            battle_mechanism
-        )
-
-    ; 
-        write('Kamu tidak di dalam battle!\n\n')
-    ).
-
-do('status'):-
-    (battle_status(1) ->
-        status,
-        battle_mechanism
-
-    ; 
-        status
-    ).
-
-/* Read Commands */
-read_command :-
-    write('Apa yang ingin kamu lakukan?\n'),
-    read(X), nl,
-    do(X), !.
-
 /* Battle Mechanism */
 battle_mechanism :-
     battle_status(Status),
@@ -343,7 +278,8 @@ battle_mechanism :-
 
     ;   
         normalize_stat,
-        write('Battle Selesai!')
+        write('Battle Selesai!'),
+        game
     ), !.
 
 /* Fungsi Battle */
