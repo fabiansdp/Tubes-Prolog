@@ -1,4 +1,4 @@
-:- include('fixedmap.pl').
+:- include('map.pl').
 
 w :-
     player_position(_,Y),
@@ -25,7 +25,8 @@ w :-
     is_enemy(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('ada musuh bos'), nl, !.
+    write('ada musuh bos'), nl,
+    encounter, !.
 
 w :-
     player_position(X,Y),
@@ -119,7 +120,8 @@ a :-
     is_enemy(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('ada musuh bos'), nl, !.
+    write('ada musuh bos'), nl,
+    encounter, !.
 
 a :-
     player_position(X,Y),
@@ -233,7 +235,8 @@ s :-
     is_enemy(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('ada musuh bos'), nl, !.
+    write('ada musuh bos'), nl,
+    encounter, !.
 
 s :-
     player_position(X,Y),
@@ -321,7 +324,8 @@ d :-
     is_enemy(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('ada musuh bos'), nl, !.
+    write('ada musuh bos'), nl,
+    encounter, !.
 
 d :-
     player_position(X,Y),
@@ -380,3 +384,15 @@ teleport :-
     X =:= C, Y =:= D,
     retract(player_position(X,Y)),
     asserta(player_position(A,B)), !.
+
+encounter :-
+    player_position(X,Y),
+    X < 6, battle(1), !.
+
+encounter :-
+    player_position(X,Y),
+    X > 6, X < 12, battle(2), !.
+
+encounter :-
+    player_position(X,Y),
+    X > 12, battle(3), !.
