@@ -6,12 +6,14 @@
 :- include('item.pl').
 :- include('inventory.pl').
 :- include('command.pl').
+:- include('map.pl').
+:- include('move.pl').
 
 enginestats(0).
 
 game :-
     enginestats(1),
-    read_command.
+    write('Apa yang ingin kamu lakukan?\n'), !.
 
 game :-
     enginestats(0),
@@ -24,8 +26,9 @@ start :-
     write('Masyarakat kami sudah bertahun-tahun takut dengan kekuatan Naga Hitam'),nl,
     write('Tolong bantulah kami untuk membasmi Naga Hitam!'), nl,nl,
     set_invent,
+    map_init,
     player_init,
-    read_command.
+    game.
 
 quit:-
     retractall(enginestats(_)),

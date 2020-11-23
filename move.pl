@@ -1,4 +1,3 @@
-:- include('map.pl').
 
 w :-
     player_position(_,Y),
@@ -386,13 +385,13 @@ teleport :-
     asserta(player_position(A,B)), !.
 
 encounter :-
-    player_position(X,Y),
-    X < 6, battle(1), !.
+    player_position(_,Y),
+    Y < 6, battle(1), !.
 
 encounter :-
-    player_position(X,Y),
-    X > 6, X < 12, battle(2), !.
+    player_position(_,Y),
+    Y > 6, Y < 12, battle(2), !.
 
 encounter :-
-    player_position(X,Y),
-    X > 12, battle(3), !.
+    player_position(_,Y),
+    Y > 12, battle(3), !.
