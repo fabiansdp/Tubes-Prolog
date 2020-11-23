@@ -175,6 +175,12 @@ level_up :-
     Att1 is Att + Add_Att,
     add_def(Class, Add_Def),
     Def1 is Def + Add_Def,
+    retractall(player_lvl(_)),
+    retractall(player_hp(_, _)),
+    retractall(player_mana(_, _)),
+    retractall(player_att(_)),
+    retractall(player_def(_)),
+    retractall(xp(_, _)),
     asserta(player_lvl(Levelup)),
     asserta(player_hp(MaxHP1, MaxHP1)),
     asserta(player_mana(MaxMana1, MaxMana1)),
@@ -192,18 +198,22 @@ check_levelup:-
 add_xp(X):-
     xp(XP, BatasXP),
     XP1 is XP + X,
+    retract(xp(_,_)),
     asserta(xp(XP1, BatasXP)),
     check_levelup, !.
 
 add_gold(X):-
     gold(Gold),
     Gold1 is Gold + X,
+    retract(gold(_)),
     asserta(gold(Gold1)),
     write('Gold: '), write(Gold1), nl, !.
 
 heal :-
     player_hp(_,MaxHP),
     player_mana(_,MaxMana),
+    retract(player_hp(_,_)),
+    retract(player_mana(_,_)),
     asserta(player_hp(MaxHP,MaxHP)), 
     asserta(player_mana(MaxMana, MaxMana)), 
     write('Semua lukamu hilang!\n\n'), !.

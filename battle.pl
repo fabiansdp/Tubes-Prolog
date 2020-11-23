@@ -48,6 +48,7 @@ check_dead_enemy :-
         write(' telah mati!\n\n'),
         add_gold(Gold),
         add_xp(XP),
+        retract(battle_status(_)),
         asserta(battle_status(0))
 
     ; enemy_hp_status   
@@ -58,6 +59,7 @@ check_dead :-
     (HP =< 0 ->  
         write('Kamu mati!\n\n'),
         write('GAME OVER!!!\n\n'),
+        retract(battle_status(_)),
         asserta(battle_status(0))
 
     ; hp_status
@@ -67,6 +69,7 @@ decr_hp(X) :-
     write('HP kamu berkurang sebanyak '), write(X), nl,
     player_hp(HP, MaxHP),
     HP1 is HP - X,
+    retract(player_hp(_,_)),
     asserta(player_hp(HP1, MaxHP)), 
     check_dead, !.
 
@@ -74,6 +77,7 @@ add_hp(X) :-
     write('HP kamu bertambah sebanyak '), write(X), write('!'), nl,
     player_hp(HP, MaxHP),
     HP1 is HP + X,
+    retract(player_hp(_,_)),
     (HP1 > MaxHP ->
         asserta(player_hp(MaxHP, MaxHP))
     ;
@@ -84,11 +88,13 @@ add_hp(X) :-
 decr_mana(X) :-
     player_mana(Mana, MaxMana),
     Mana1 is Mana - X,
+    retract(player_mana(_,_)),
     asserta(player_mana(Mana1, MaxMana)), !.
 
 decr_cd :-
     skill_cd(CD),
     CD1 is CD - 1,
+    retract(skill_cd(_)),
     (CD1 == 0 ->
         asserta(skill_cd(CD1)),
         write('Special Attack dapat dipakai lagi\n\n')
@@ -98,12 +104,17 @@ decr_cd :-
 
 normalize_stat :-
     normal_stat(Att,Def),
+    retractall(skill_cd(_)),
+    retractall(effect_cd(_)),
+    retract(player_att(_)),
+    retract(player_def(_)),
     asserta(player_att(Att)),
     asserta(player_def(Def)).
 
 decr_effect :-
     effect_cd(CD),
     CD1 is CD - 1,
+    retract(effect_cd(_)),
     (CD1 == 0 ->
         asserta(effect_cd(CD1)),
         normalize_stat,
@@ -117,6 +128,7 @@ decr_enemy_hp(X) :-
     write('HP '), write(Name), write(' berkurang sebanyak '), write(X), nl,
     enemy_hp(HP, MaxHP), 
     HP1 is HP - X,
+    retract(enemy_hp(_,_)),
     asserta(enemy_hp(HP1, MaxHP)),
     check_dead_enemy.
 
@@ -127,7 +139,7 @@ attack :-
         player_att(Att),
         Damage is Att - Def*0.2,
         decr_enemy_hp(Damage),
-        retractall(turn(_)),
+        retract(turn(_)),
         asserta(turn(0)),
         skill_cd(CD),
         (CD > 0 -> decr_cd ; true),
@@ -141,11 +153,13 @@ attack :-
 lari :-
     random(1,3,X),
     (X == 1 ->
+        retract(battle_status(_)),
         asserta(battle_status(0)),
         write('Kamu berhasil melarikan diri dari battle!\n\n'),
         battle_mechanism
     ; 
         write('Oops kamu ga berhasil melarikan diri!\n\n'),
+        retract(turn(_)),
         asserta(turn(0)),
         battle_mechanism
     ).
@@ -166,12 +180,17 @@ skill_effect('Rage') :-
         DefMod is Def * (0.5+0.01*(Level-1)),
         Att1 is Att + AttMod,
         Def1 is Def + DefMod,
+        retract(player_att(_)),
+        retract(player_def(_)),
+        retract(skill_cd(_)),
+        retract(effect_cd(_)),
         asserta(player_att(Att1)),
         asserta(player_def(Def1)),
         asserta(skill_cd(3)),
         asserta(effect_cd(2)),
         write('Rage!!!\n'), 
         write('Stat kamu bertambah untuk dua turn!\n\n'),
+        retract(turn(_)),
         asserta(turn(0))
     ).
 
@@ -190,6 +209,8 @@ skill_effect('Power Shot') :-
         Damage is Att* (2 + 0.02*(Level-1)),
         write('Power Shot!!\n'),
         decr_enemy_hp(Damage),
+        retract(skill_cd(_)),
+        retract(turn(_)),
         asserta(skill_cd(3)),
         asserta(turn(0))
     ).
@@ -215,6 +236,11 @@ skill_effect('Divine Light') :-
         DefMod is 20 + 5*(Level-1),
         Att1 is Att + AttMod,
         Def1 is Def + DefMod,
+        retract(player_att(_)),
+        retract(player_def(_)),
+        retract(skill_cd(_)),
+        retract(effect_cd(_)),
+        retract(turn(_)),
         asserta(player_att(Att1)),
         asserta(player_def(Def1)),
         asserta(skill_cd(3)),
@@ -236,6 +262,7 @@ enemy_attack :-
     enemy_att(Att),
     Damage is Att - Def*0.2,
     decr_hp(Damage),
+    retract(turn(_)),
     asserta(turn(1)),
     battle_mechanism, !.
 
@@ -285,7 +312,7 @@ do('specialattack'):-
         )
 
     ; 
-        write('Kamu tidak di dalam battle!\n\n'), fail
+        write('Kamu tidak di dalam battle!\n\n')
     ).
 
 do('status'):-
@@ -323,6 +350,11 @@ battle_mechanism :-
 battle(X) :-
     player_att(Att),
     player_def(Def),
+    retractall(battle_status(_)),
+    retractall(turn(_)),
+    retractall(skill_cd(_)),
+    retractall(effect_cd(_)),
+    retractall(normal_stat(_,_)),
     asserta(battle_status(1)),
     asserta(turn(1)),
     asserta(skill_cd(0)),
