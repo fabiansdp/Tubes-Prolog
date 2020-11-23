@@ -1,4 +1,10 @@
 
+
+
+w :-
+    \+ enginestats(1),
+    write('mulai sek mas'), nl, !.
+
 w :-
     player_position(_,Y),
     Y is 1, write('duar tembok'), nl, !.
@@ -59,8 +65,7 @@ w :-
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
     write('dziingg, teleport nih'), nl,
-    teleport,
-    print_all, !.
+    teleport, !.
 
 w :-
     player_position(X,Y),
@@ -91,8 +96,11 @@ w :-
     Y2 is Y-1,
     X2 is X,
     retract(player_position(X,Y)),
-    asserta(player_position(X2,Y2)),
-    print_all, !.
+    asserta(player_position(X2,Y2)), !.
+
+a :-
+    \+ enginestats(1),
+    write('mulai sek mas'), nl, !.
 
 a :-
     player_position(X,_),
@@ -154,8 +162,7 @@ a :-
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
     write('dziingg, teleport nih'), nl,
-    teleport,
-    print_all, !.
+    teleport, !.
 
 a :-
     player_position(X,Y),
@@ -186,8 +193,11 @@ a :-
     X2 is X-1,
     Y2 is Y,
     retract(player_position(X,Y)),
-    asserta(player_position(X2,Y2)),
-    print_all, !.
+    asserta(player_position(X2,Y2)), !.
+
+s :-
+    \+ enginestats(1),
+    write('mulai sek mas'), nl, !.
 
 s :-
     player_position(_,Y),
@@ -266,8 +276,7 @@ s :-
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
     write('dziingg, teleport nih'), nl,
-    teleport,
-    print_all, !.
+    teleport, !.
 
 s :-
     player_position(X,Y),
@@ -275,8 +284,11 @@ s :-
     Y2 is Y+1,
     X2 is X,
     retract(player_position(X,Y)),
-    asserta(player_position(X2,Y2)),
-    print_all, !.
+    asserta(player_position(X2,Y2)), !.
+
+d :-
+    \+ enginestats(1),
+    write('mulai sek mas'), nl, !.
 
 d :-
     player_position(X,_),
@@ -355,8 +367,7 @@ d :-
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
     write('dziingg, teleport nih'), nl,
-    teleport,
-    print_all, !.
+    teleport, !.
     
 d :-
     player_position(X,Y),
@@ -364,8 +375,7 @@ d :-
     X2 is X+1,
     Y2 is Y,
     retract(player_position(X,Y)),
-    asserta(player_position(X2,Y2)),
-    print_all, !.
+    asserta(player_position(X2,Y2)), !.
 
 
 teleport :-
@@ -395,3 +405,6 @@ encounter :-
 encounter :-
     player_position(_,Y),
     Y > 12, battle(3), !.
+
+obtain_treasure :-
+    treasure_status(1).
