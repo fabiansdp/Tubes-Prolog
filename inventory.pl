@@ -1,6 +1,3 @@
-:- include('item.pl').
-
-
 :- dynamic(itemInv/5). /* Item(class, type, nama, minlvl, +effect) atau Untuk potion: Item(class, type, nama, harga, +effect) */
 :- dynamic(maxInventory/1). /*max inventory*/
 
