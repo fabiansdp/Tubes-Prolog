@@ -12,7 +12,12 @@
 %treasurestats(1) maka bonus quest sudah pernah diambil sebelumnya
 %treasurestats(0) maka bonus quest belum pernah diambil sebelumnya
 
-/* Ngecek sudah nyelesain */
+:-dynamic(killstats/3).
+
+% Fakta Awal %
+statusquest(0).
+treasurestats(0).
+
 quest(Slime,Goblin,Wolf) :-
     Slime >= 0, Goblin >=3, Wolf >= 2, !, retractall(level(_,_,_)), asserta(level(6,600,600));
     Slime >= 1, Goblin >=1, Wolf >= 2, !, retractall(level(_,_,_)), asserta(level(5,500,500));
@@ -35,14 +40,14 @@ startquest(A):-
     retractall(statusquest(_)),
     retractall(levelsekarang(_)),
     asserta(statusquest(1)),
-    asserta(levelsekarang(A)),
-
-    !;
+    asserta(levelsekarang(A)), !;
+    
     statusquest(1),
     write('selesaikan quest yang sudah ada dulu gan').
 
 
-pantauQuest(S,G,W):-
+pantauQuest:-
+    killstats(S,G,W),
     statusquest(1),
     quest(S,G,W),
     level(Now,_,_),
@@ -56,6 +61,7 @@ pantauQuest(S,G,W):-
     asserta(statusquest(0)),!;
     
     statusquest(1),
+    killstats(S,G,W),
     progressquest(S,G,W),!;
 
     statusquest(0),!, write('tidak ada quest yang dipantau').
@@ -68,7 +74,6 @@ abandon :-
     statusquest(0), write('tidak ada quest yang dijalankan!').
 
 %bonusQuest
-treasurestats(0).
 bonusQuest:-
     statusquest(1),!,
     write('selesaikan quest yang sudah ada dulu gan');
