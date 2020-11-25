@@ -462,3 +462,14 @@ generatequest :-
 generatequest :-
     player_position(5, 13),
     startquest(6), !.
+
+legend :-
+    print_all,
+    write('P = Player\n'),
+    write('E = Enemy\n'),
+    write('G = Teleport\n'),
+    write('S = Shop\n'),
+    write('D = Boss\n'),
+    write('Q = Quest\n'),
+    write('T = ?????\n'),
+    write('Apa yang ingin kamu lakukan?\n\n').

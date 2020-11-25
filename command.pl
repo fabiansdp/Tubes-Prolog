@@ -74,7 +74,8 @@ help :-
     write('3. s (Mundur)\n'),
     write('4. d (Kanan)\n'),
     write('5. heal (Pulihkan HP dan Mana)\n'),
-    write('6. legend\n'),
+    write('6. legend (Lihat legend map)\n'),
     write('7. status (Lihat Stat)\n'),
-    write('8. inventory (Lihat Inventory)\n\n'),
-    game.
+    write('8. inventory (Lihat Inventory)\n'),
+    write('9. checkquest (Check Status Quest)\n\n'),
+    write('Apa yang ingin kamu lakukan?\n\n'). 

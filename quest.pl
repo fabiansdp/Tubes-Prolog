@@ -14,12 +14,12 @@
 
 
 /* quest(lvl,xp,gold) */
-quest(1, 25, 75).
-quest(2, 40, 100).
-quest(3, 55, 150).
-quest(4, 70, 250).
-quest(5, 90, 400).
-quest(6, 120, 600).
+quest(1, 15, 75).
+quest(2, 30, 100).
+quest(3, 40, 150).
+quest(4, 55, 250).
+quest(5, 65, 400).
+quest(6, 80, 600).
 
 /* Jumlah kill untuk setiap kill quest_goal(lvl,slime,goblin,wolf)*/
 quest_goal(1,3,0,0).
