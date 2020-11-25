@@ -80,7 +80,7 @@ w :-
     is_shop(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Wah ada toko nih, bang beli bang!'), nl, !.
+    write('Wah ada toko nih, bang beli bang!'), nl, shop, !.
     
 w :-
     player_position(X,Y),
@@ -186,8 +186,7 @@ a :-
     is_shop(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('wah ada toko nih, bang beli bang!'), nl,
-    game, !.
+    write('wah ada toko nih, bang beli bang!'), nl, shop, !.
 
 a :-
     player_position(X,Y),
@@ -244,7 +243,7 @@ s :-
     is_shop(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('wah ada toko nih, bang beli bang!'), nl, !.
+    write('wah ada toko nih, bang beli bang!'), nl, shop, !.
 
 s :-
     player_position(X,Y),
@@ -344,7 +343,7 @@ d :-
     is_shop(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('wah ada toko nih, bang beli bang!'), nl, !.
+    write('wah ada toko nih, bang beli bang!'), nl, shop, !.
 
 d :-
     player_position(X,Y),
@@ -388,7 +387,7 @@ d :-
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
     write('Waw ada harta karun'), nl,
-    game, !.
+    bonusQuest, !.
 
 d :-
     player_position(X,Y),

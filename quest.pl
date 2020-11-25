@@ -1,5 +1,3 @@
-:- include('map.pl').
-
 :- dynamic(level/3).
 %level(tingkat kesulitan,exp,gold).
 
@@ -14,6 +12,7 @@
 %treasurestats(1) maka bonus quest sudah pernah diambil sebelumnya
 %treasurestats(0) maka bonus quest belum pernah diambil sebelumnya
 
+/* Ngecek sudah nyelesain */
 quest(Slime,Goblin,Wolf) :-
     Slime >= 0, Goblin >=3, Wolf >= 2, !, retractall(level(_,_,_)), asserta(level(6,600,600));
     Slime >= 1, Goblin >=1, Wolf >= 2, !, retractall(level(_,_,_)), asserta(level(5,500,500));
@@ -28,7 +27,9 @@ getprize(Exp,Gold) :-
     Exp is AB,
     Gold is AC.
 
-statusquest(0).
+quest_init:-
+    asserta(statusquest(0)).
+
 startquest(A):-
     statusquest(0),
     retractall(statusquest(_)),
@@ -48,7 +49,7 @@ pantauQuest(S,G,W):-
     levelsekarang(A),
     Now =:= A,
     write('selamat quest ke- '),
-    write(A),write(' sudah selesai, hadiah sudah otomatis terklaim'),
+    write(A),write(' sudah selesai, hadiah sudah otomatis terklaim\n'),
     getprize(Exp,Emas),
     %tambah skema untuk penambahan exp dan emas.
     retractall(statusquest(_)),
@@ -77,35 +78,35 @@ bonusQuest:-
     %skema penambahan exp dan gold
     write('selamat anda mendapat harta karun'),nl,
     write('xx EXP telah ditambahkan'),nl,
-    write('yy Gold telah ditambahkan'),
-    retractall(statusquest(_)),  
+    write('yy Gold telah ditambahkan'), 
+    retract(treasurestats(_)),
     asserta(treasurestats(1)).
 
 %progressquest
 progressquest(S,G,W):-
     levelsekarang(Now),
     Now =:= 1,
-    write('quest stats'),nl,
+    write('Quest stats: '),nl,
     write('Now playing on Level '),write(Now),nl,
     write(S),write('/1 Slime to pass'),nl,!;
 
     levelsekarang(Now),
     Now =:= 2,
-    write('quest stats'),nl,
+    write('Quest stats: '),nl,
     write('Now playing on Level '),write(Now),nl,
     write(S),write('/1 Slime to pass'),nl,
     write(G),write('/1 Goblin to pass'),nl,!;
 
     levelsekarang(Now),
     Now =:= 3,
-    write('quest stats'),nl,
+    write('Quest stats: '),nl,
     write('Now playing on Level '),write(Now),nl,
     write(S),write('/2 Slime to pass'),nl,
     write(G),write('/1 Goblin to pass'),nl,!;
 
     levelsekarang(Now),
     Now =:= 4,
-    write('quest stats'),nl,
+    write('Quest stats: '),nl,
     write('Now playing on Level '),write(Now),nl,
     write(S),write('/1 Slime to pass'),nl,
     write(G),write('/1 Goblin to pass'),nl,
@@ -113,7 +114,7 @@ progressquest(S,G,W):-
 
     levelsekarang(Now),
     Now =:= 5,
-    write('quest stats'),nl,
+    write('Quest stats: '),nl,
     write('Now playing on Level '),write(Now),nl,
     write(S),write('/1 Slime to pass'),nl,
     write(G),write('/1 Goblin to pass'),nl,
@@ -121,7 +122,7 @@ progressquest(S,G,W):-
 
     levelsekarang(Now),
     Now =:= 6,
-    write('quest stats'),nl,
+    write('Quest stats: '),nl,
     write('Now playing on Level '),write(Now),nl,
     write(G),write('/3 Goblin to pass'),nl,
     write(W),write('/2 Wolf to pass'),nl,!.
