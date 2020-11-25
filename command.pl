@@ -77,5 +77,6 @@ help :-
     write('6. legend (Lihat legend map)\n'),
     write('7. status (Lihat Stat)\n'),
     write('8. inventory (Lihat Inventory)\n'),
-    write('9. checkquest (Check Status Quest)\n\n'),
+    write('9. equip(Insert nama item)\n'),
+    write('10. checkquest (Check Status Quest)\n\n'),
     write('Apa yang ingin kamu lakukan?\n\n'). 
