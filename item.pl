@@ -175,7 +175,12 @@ set_item('Armor', Name):-
     asserta(player_def(Def2)),
     asserta(player_armor(Name)), !.
 
-equip_item(Name):-
+equip(Name):-
+    itemInv(Name,_),
     item(_, Type, Name, _, _),
     set_item(Type, Name), 
     write(Name), write(' berhasil di-equip!\n\n'), !.
+
+equip(Name):-
+    \+itemInv(Name,_),
+    write('Kamu tidak punya '), write(Name), write('!\n\n'), !.

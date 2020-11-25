@@ -48,6 +48,7 @@ check_dead_enemy :-
         add_xp(XP),
         retract(battle_status(_)),
         asserta(battle_status(0)),
+        (statusquest(1) -> quest_tracker(Enemy) ; true),
         (enemy_name('Ancient Black Dragon') ->
             write('Kamu Telah Membasmi Naga Hitam!!\n\n'),
             retract(enginestats(_)),
@@ -145,7 +146,7 @@ attack :-
         enemy_def(Def),
         player_att(Att),
         Damage is Att - Def*0.2,
-        decr_enemy_hp(Damage),
+        (Damage < 0 -> decr_enemy_hp(0) ; decr_enemy_hp(Damage)),
         retract(turn(_)),
         asserta(turn(0)),
         skill_cd(CD),
@@ -270,7 +271,7 @@ enemy_attack :-
     player_def(Def),
     enemy_att(Att),
     Damage is Att - Def*0.2,
-    decr_hp(Damage),
+    (Damage < 0 -> decr_hp(0) ; decr_hp(Damage)),
     retract(turn(_)),
     asserta(turn(1)),
     battle_mechanism, !.
