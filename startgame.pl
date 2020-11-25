@@ -20,12 +20,12 @@ game :-
 
 game :-
     enginestats(0),
-    write('The End\n\n').
+    write('=======THE END=======\n\n').
 
 start :-
     retract(enginestats(_)),
     asserta(enginestats(1)),
-    write('SELAMAT DATANG!!'),nl,
+    write('=======SELAMAT DATANG======='),nl,
     write('Masyarakat kami sudah bertahun-tahun takut dengan kekuatan Naga Hitam'),nl,
     write('Tolong bantulah kami untuk membasmi Naga Hitam!'), nl,nl,
     quest_init,

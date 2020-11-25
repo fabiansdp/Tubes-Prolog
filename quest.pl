@@ -1,133 +1,127 @@
-:- dynamic(level/3).
-%level(tingkat kesulitan,exp,gold).
-
 :-dynamic(statusquest/1).
 %statusquest(1) maka sedang ada quest berjalan
 %statusquest(0) maka tidak ada quest berjalan
 
 :-dynamic(levelsekarang/1).
-%levelsekarang(L) level yang sekarang sedang dijalankan (1-6)
+%levelsekarang(L) level quest yang sekarang sedang dijalankan (1-6)
 
 :-dynamic(treasurestats/1).
 %treasurestats(1) maka bonus quest sudah pernah diambil sebelumnya
 %treasurestats(0) maka bonus quest belum pernah diambil sebelumnya
 
 :-dynamic(killstats/3).
-
-% Fakta Awal %
-statusquest(0).
-treasurestats(0).
-
-quest(Slime,Goblin,Wolf) :-
-    Slime >= 0, Goblin >=3, Wolf >= 2, !, retractall(level(_,_,_)), asserta(level(6,600,600));
-    Slime >= 1, Goblin >=1, Wolf >= 2, !, retractall(level(_,_,_)), asserta(level(5,500,500));
-    Slime >= 1, Goblin >=1, Wolf >= 1, !, retractall(level(_,_,_)), asserta(level(4,400,400));
-    Slime >= 2, Goblin >=1, Wolf >= 0, !, retractall(level(_,_,_)), asserta(level(3,300,300));
-    Slime >= 1, Goblin >=1, Wolf >= 0, !, retractall(level(_,_,_)), asserta(level(2,200,200));
-    Slime >= 1, Goblin >=0, Wolf >= 0, !, retractall(level(_,_,_)), asserta(level(1,100,100)).
+% killstats(slime,goblin,wolf)
 
 
-getprize(Exp,Gold) :-
-    level(_,AB,AC),
-    Exp is AB,
-    Gold is AC.
+/* quest(lvl,xp,gold) */
+quest(1, 25, 75).
+quest(2, 40, 100).
+quest(3, 55, 150).
+quest(4, 70, 250).
+quest(5, 90, 400).
+quest(6, 120, 600).
 
+/* Jumlah kill untuk setiap kill quest_goal(lvl,slime,goblin,wolf)*/
+quest_goal(1,3,0,0).
+quest_goal(2,2,1,0).
+quest_goal(3,3,2,0).
+quest_goal(4,3,1,1).
+quest_goal(5,3,2,1).
+quest_goal(6,3,3,2).
+
+% Init di awal game
 quest_init:-
-    asserta(statusquest(0)).
+    asserta(statusquest(0)),
+    asserta(treasurestats(0)).
 
 startquest(A):-
     statusquest(0),
     retractall(statusquest(_)),
     retractall(levelsekarang(_)),
+    retractall(killstats(_,_,_)),
+    asserta(killstats(0,0,0)),
     asserta(statusquest(1)),
     asserta(levelsekarang(A)), !;
-    
-    statusquest(1),
-    write('selesaikan quest yang sudah ada dulu gan').
 
-
-pantauQuest:-
-    killstats(S,G,W),
     statusquest(1),
-    quest(S,G,W),
-    level(Now,_,_),
-    levelsekarang(A),
-    Now =:= A,
-    write('selamat quest ke- '),
-    write(A),write(' sudah selesai, hadiah sudah otomatis terklaim\n'),
-    getprize(Exp,Emas),
-    %tambah skema untuk penambahan exp dan emas.
-    retractall(statusquest(_)),
-    asserta(statusquest(0)),!;
-    
-    statusquest(1),
-    killstats(S,G,W),
-    progressquest(S,G,W),!;
-
-    statusquest(0),!, write('tidak ada quest yang dipantau').
+    write('Selesaikan quest yang sudah ada dulu gan\n\n').
 
 abandon :-
     statusquest(1),
     retractall(statusquest(_)),
-    write('anda telah menyerah pada quest ini'),
+    write('Anda telah menyerah pada quest ini\n'),
     asserta(statusquest(0)),!;
-    statusquest(0), write('tidak ada quest yang dijalankan!').
+
+    statusquest(0), write('Tidak ada quest yang dijalankan!\n\n').
 
 %bonusQuest
-bonusQuest:-
-    statusquest(1),!,
-    write('selesaikan quest yang sudah ada dulu gan');
-    treasurestats(1),!,
-    write('harta karun sudah pernah diambil bosq');
-    statusquest(0),treasurestats(0),!,
-    %skema penambahan exp dan gold
-    write('selamat anda mendapat harta karun'),nl,
-    write('xx EXP telah ditambahkan'),nl,
-    write('yy Gold telah ditambahkan'), 
+treasureQuest:-
+    treasurestats(1),
+    write('Harta karun sudah pernah diambil bos\n\n');
+
+    treasurestats(0),
+    write('Selamat Anda menemukan harta karun'),nl,
+    write('1000 Gold telah ditambahkan\n\n'),
+    add_gold(1000),
     retract(treasurestats(_)),
-    asserta(treasurestats(1)).
+    asserta(treasurestats(1)), game.
 
-%progressquest
-progressquest(S,G,W):-
-    levelsekarang(Now),
-    Now =:= 1,
-    write('Quest stats: '),nl,
-    write('Now playing on Level '),write(Now),nl,
-    write(S),write('/1 Slime to pass'),nl,!;
+check_completion :-
+    levelsekarang(X),
+    killstats(Slime,Goblin,Wolf),
+    quest_goal(X, SGoal, GGoal, WGoal),
+    (Slime == SGoal -> 
+        (Goblin == GGoal ->
+            (Wolf == WGoal ->
+                write('Quest Selesai!\n'),
+                retractall(statusquest(_)),
+                asserta(statusquest(0)),
+                quest(X, XP, Gold),
+                add_xp(XP),
+                add_gold(Gold)
+            ;
+                true
+            )
+        ;
+            true
+        )   
+    ;
+        true 
+    ).
 
-    levelsekarang(Now),
-    Now =:= 2,
-    write('Quest stats: '),nl,
-    write('Now playing on Level '),write(Now),nl,
-    write(S),write('/1 Slime to pass'),nl,
-    write(G),write('/1 Goblin to pass'),nl,!;
+quest_tracker('Slime') :-
+    killstats(Slime,Goblin,Wolf),
+    Slime1 is Slime + 1,
+    retract(killstats(_,_,_)),
+    asserta(killstats(Slime1,Goblin,Wolf)),
+    check_completion.
 
-    levelsekarang(Now),
-    Now =:= 3,
-    write('Quest stats: '),nl,
-    write('Now playing on Level '),write(Now),nl,
-    write(S),write('/2 Slime to pass'),nl,
-    write(G),write('/1 Goblin to pass'),nl,!;
+quest_tracker('Goblin') :-
+    killstats(Slime,Goblin,Wolf),
+    Goblin1 is Goblin + 1,
+    retract(killstats(_,_,_)),
+    asserta(killstats(Slime,Goblin1,Wolf)),
+    check_completion.
 
-    levelsekarang(Now),
-    Now =:= 4,
-    write('Quest stats: '),nl,
-    write('Now playing on Level '),write(Now),nl,
-    write(S),write('/1 Slime to pass'),nl,
-    write(G),write('/1 Goblin to pass'),nl,
-    write(W),write('/1 Wolf to pass'),nl,!;
+quest_tracker('Wolf') :-
+    killstats(Slime,Goblin,Wolf),
+    Wolf1 is Wolf + 1,
+    retract(killstats(_,_,_)),
+    asserta(killstats(Slime,Goblin,Wolf1)),
+    check_completion.
 
-    levelsekarang(Now),
-    Now =:= 5,
-    write('Quest stats: '),nl,
-    write('Now playing on Level '),write(Now),nl,
-    write(S),write('/1 Slime to pass'),nl,
-    write(G),write('/1 Goblin to pass'),nl,
-    write(W),write('/2 Wolf to pass'),nl,!;
+checkquest :-
+    statusquest(1),
+    levelsekarang(X),
+    killstats(S,G,W),
+    quest_goal(X, SGoal, GGoal, WGoal),
+    write('Status Quest:\n'),
+    write('Slime: '), write(S), write('/'), write(SGoal), nl,
+    write('Goblin: '), write(G), write('/'), write(GGoal), nl,
+    write('Wolf: '), write(W), write('/'), write(WGoal), nl, nl,
+    game.
 
-    levelsekarang(Now),
-    Now =:= 6,
-    write('Quest stats: '),nl,
-    write('Now playing on Level '),write(Now),nl,
-    write(G),write('/3 Goblin to pass'),nl,
-    write(W),write('/2 Wolf to pass'),nl,!.
+checkquest :-
+    statusquest(0),
+    write('Kamu tidak ada Quest!\n\n'), 
+    game.

@@ -44,6 +44,7 @@ w :-
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
     write('Your majesty, there is a quest for you'), nl,
+    generatequest,
     game, !.
 
 w :-
@@ -55,8 +56,7 @@ w :-
     is_treasure(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Waw ada harta karun'), nl,
-    game, !.
+    treasureQuest.
 
 w :-
     player_position(X,Y),
@@ -150,6 +150,7 @@ a :-
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
     write('Your majesty, there is a quest for you'), nl,
+    generatequest,
     game, !.
 
 a :-
@@ -161,8 +162,7 @@ a :-
     is_treasure(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('waw ada harta karun'), nl,
-    game, !.
+    treasureQuest.
 
 a :-
     player_position(X,Y),
@@ -276,6 +276,7 @@ s :-
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
     write('Your majesty, there is a quest for you'), nl,
+    generatequest,
     game, !.
 
 s :-
@@ -286,8 +287,7 @@ s :-
     is_treasure(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Waw ada harta karun'), nl,
-    game, !.
+    treasureQuest.
 
 s :-
     player_position(X,Y),
@@ -376,6 +376,7 @@ d :-
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
     write('Your majesty, there is a quest for you'), nl,
+    generatequest,
     game, !.
 
 d :-
@@ -386,8 +387,7 @@ d :-
     is_treasure(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Waw ada harta karun'), nl,
-    bonusQuest, !.
+    treasureQuest.
 
 d :-
     player_position(X,Y),
@@ -399,7 +399,7 @@ d :-
     asserta(player_position(X2,Y2)),
     write('Dziingg, teleport nih'), nl,
     teleport,
-    game, !.
+    game.
     
 d :-
     player_position(X,Y),
@@ -428,16 +428,37 @@ teleport :-
     asserta(player_position(A,B)), !.
 
 encounter :-
-    player_position(_,Y),
+    player_position(_, Y),
     Y < 6, battle(1), !.
 
 encounter :-
-    player_position(_,Y),
+    player_position(_, Y),
     Y > 6, Y < 12, battle(2), !.
 
 encounter :-
-    player_position(_,Y),
+    player_position(_, Y),
     Y > 12, battle(3), !.
 
-obtain_treasure :-
-    treasure_status(1).
+generatequest :-
+    player_position(2, 5),
+    startquest(1), !.
+
+generatequest :-
+    player_position(15, 1),
+    startquest(2), !.
+
+generatequest :-
+    player_position(1, 8),
+    startquest(3), !.
+
+generatequest :-
+    player_position(10, 11),
+    startquest(4), !.
+
+generatequest :-
+    player_position(1, 20),
+    startquest(5), !.
+
+generatequest :-
+    player_position(5, 13),
+    startquest(6), !.
