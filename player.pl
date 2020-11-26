@@ -199,7 +199,7 @@ level_up :-
 /* Operasi terhadap stat pemain */
 check_levelup:-
     xp(XP, BatasXP),
-    (XP >= BatasXP -> level_up ; write_xp), !.
+    (XP >= BatasXP -> level_up, check_levelup ; write_xp), !.
 
 add_xp(X):-
     xp(XP, BatasXP),
