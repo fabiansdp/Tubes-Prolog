@@ -56,13 +56,13 @@ set_store :-
 
 /*Command untuk membuka shop*/
 shop :- 
-    write('Pengen tuku opo lur? '), nl,
-    write('Input 1 untuk Gacha (30 Gold) '), nl,
-    write('Input 2 untuk Red Potion (15 Gold)'), nl,
-    write('Input 3 untuk Blue Potion (15 Gold)'), nl,
-    write('Input 4 untuk Rage Potion (10 Gold)'), nl,
-    write('Input 5 untuk Defense Potion (10 Gold)'), nl,
-    write('Input 6 untuk Keluar'), nl,
+    write('Your Majesty, what do you need? '), nl,
+    write('Input 1 to Gacha Item (30 Gold) '), nl,
+    write('Input 2 to buy Red Potion (15 Gold)'), nl,
+    write('Input 3 to buy Blue Potion (15 Gold)'), nl,
+    write('Input 4 to buy Rage Potion (10 Gold)'), nl,
+    write('Input 5 to buy Defense Potion (10 Gold)'), nl,
+    write('Input 6 to Exit shop'), nl,
     read(X),
     input(X), !.
 /*=============================================================*/
@@ -71,7 +71,7 @@ shop :-
 /*=============================================================*/
 /*Exit shop*/
 input(6) :-
-    write('Terimakasih sudah datang'), nl, nl, game, !.
+    write('Thank you very much, I hope Your succesfull journey!'), nl, nl, game, !.
 /*=============================================================*/
 
 
@@ -83,7 +83,7 @@ input(X) :-
     gold(Gold),
     harga(X,_,Harga),
     (Harga > Gold),
-    write('Gold kamu tidak cukup!\n'), nl, shop, !.
+    write('Not enough gold!\n'), nl, shop, !.
 
 /*GOLD CUKUP*/
 /*Item yang dibeli Gacha*/
@@ -92,7 +92,7 @@ input(1) :-
     min_gold(Harga),
     random(1,25,Y),
     itemId(Y,RandomItem),
-    write('GOTCHAAA, Kamu mendapatkan '), write(RandomItem), write('!!!'),nl, nl,
+    write('GOTCHAAA, you obtained '), write(RandomItem), write('!!!'),nl, nl,
     addItemInv(RandomItem), shop, !.
 
 /*Item yang dibeli bukan Gacha*/

@@ -32,7 +32,7 @@ addItemInv(_) :-
     banyakItemInventory(_, Jumlah),
     maxInventory(Max),
     (Jumlah >= Max),
-    write('Inventory penuh!'), nl, !, fail.
+    write('Inventory is full!'), nl, !, fail.
 
 
 /*Inventori muat*/

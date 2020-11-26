@@ -1,19 +1,19 @@
 read_command :-
-    write('Apa yang ingin kamu lakukan?\n'),
+    write('What you want to do, My Lord?\n'),
     read(X), nl,
     do(X), !.
 
 /* Command Battle */
 do('attack') :- attack.
 
-do('lari') :- lari.
+do('flee') :- lari.
 
 do('help') :-
-    write('Daftar Command Battle:\n'),
+    write('Battle action list:\n'),
     write('1. status\n'),
     write('2. attack\n'),
     write('3. specialattack\n'),
-    write('4. lari\n'),
+    write('4. flee\n'),
     write('5. redpotion\n'),
     write('6. bluepotion\n'),
     write('7. enragepotion\n'),
@@ -22,8 +22,8 @@ do('help') :-
 
 do('heal') :-
     (battle_status(1) ->
-        write('Kamu tidak bisa heal di dalam battle!\n'),
-        write('Gunakan potion yang kamu punya!\n\n'),
+        write('You cant use heal in the battle!\n'),
+        write('Use your potion, My Lord!\n\n'),
         battle_mechanism
 
     ; 
@@ -38,12 +38,12 @@ do('specialattack'):-
             battle_mechanism
         
         ; 
-            write('Skill masih cooldown!\n\n'),
+            write('Skill is in cooldown!\n\n'),
             battle_mechanism
         )
 
     ; 
-        write('Kamu tidak di dalam battle!\n\n'),
+        write('You are not in battle, My Lord!\n\n'),
         game
     ).
 
@@ -66,17 +66,21 @@ do('defensepotion'):-
     use_potion('Defense Potion'),
     battle_mechanism, !.
 
+do(_) :-
+    write('I think that is not an option, My Lord'), nl,
+    battle_mechanism, !.
+
 /* Command Exploration */
 help :-
-    write('Daftar Command:\n'),
-    write('1. w (Maju)\n'),
-    write('2. a (Kiri)\n'),
-    write('3. s (Mundur)\n'),
-    write('4. d (Kanan)\n'),
-    write('5. heal (Pulihkan HP dan Mana)\n'),
-    write('6. legend (Lihat legend map)\n'),
-    write('7. status (Lihat Stat)\n'),
-    write('8. inventory (Lihat Inventory)\n'),
-    write('9. equip(Insert nama item)\n'),
-    write('10. checkquest (Check Status Quest)\n\n'),
-    write('Apa yang ingin kamu lakukan?\n\n'). 
+    write('Command list:\n'),
+    write('1. w (Forward)\n'),
+    write('2. a (Left)\n'),
+    write('3. s (Backward)\n'),
+    write('4. d (Right)\n'),
+    write('5. heal (Replenish HP and mana\n'),
+    write('6. legend (Show map and map legend)\n'),
+    write('7. status (Show player stats)\n'),
+    write('8. inventory (Open inventory)\n'),
+    write('9. equip(Insert item name)\n'),
+    write('10. checkquest (Check quest status)\n\n'),
+    write('What you want to do, My Lord?\n\n'). 

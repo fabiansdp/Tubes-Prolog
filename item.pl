@@ -35,10 +35,13 @@ item('Magician', 'Armor', 'Magician Robe', 5, 30).
 item('Magician', 'Armor', 'Robe of Light', 12, 50).
 item('Magician', 'Armor', 'Divine Robe', 20, 100).
 
+/* ???? */
+item(_,_, 'Courage Pendant',_,_).
+
 /* Fungsi-fungsi Use Potion */
 use_potion('Red Potion'):-
     \+itemInv('Red Potion', _),
-    write('Tidak punya Red potion!\n').
+    write('You dont have Red potion!\n').
 
 use_potion('Red Potion'):-
     itemInv('Red Potion', _),
@@ -53,11 +56,11 @@ use_potion('Red Potion'):-
         asserta(player_hp(HP1, MaxHP)), !
     ),
     asserta(turn(0)),
-    write('Kamu memakai Red Potion\n\n').
+    write('You have used Red Potion\n\n').
 
 use_potion('Blue Potion'):-
     \+itemInv('Blue Potion',_),
-    write('Tidak punya Blue potion!\n').
+    write('You dont have Blue potion!\n').
 
 use_potion('Blue Potion'):-
     itemInv('Blue Potion',_),
@@ -72,11 +75,11 @@ use_potion('Blue Potion'):-
         asserta(player_mana(Mana1, MaxMana)), !
     ),
     asserta(turn(0)),
-    write('Kamu memakai Blue Potion\n\n'), !.
+    write('You have used Blue Potion\n\n'), !.
 
 use_potion('Enrage Potion'):-
     \+itemInv('Enrage Potion',_),
-    write('Tidak punya enrage potion!\n\n').
+    write('You dont have enrage potion!\n\n').
 
 use_potion('Enrage Potion'):-
     itemInv('Enrage Potion',_),
@@ -87,11 +90,11 @@ use_potion('Enrage Potion'):-
     retract(turn(_)),
     asserta(player_att(Att1)),
     asserta(turn(0)),
-    write('Kamu memakai Enrage Potion\n\n'), !.
+    write('You have used Enrage Potion\n\n'), !.
 
 use_potion('Defense Potion'):- 
     \+itemInv('Defense Potion',_),
-    write('Tidak punya defense potion!\n').
+    write('You dont have defense potion!\n').
 
 use_potion('Defense Potion'):-   
     itemInv('Defense Potion',_),
@@ -102,7 +105,7 @@ use_potion('Defense Potion'):-
     retract(turn(_)),
     asserta(player_def(Def1)),
     asserta(turn(0)),
-    write('Kamu memakai Defense Potion\n\n'), !.
+    write('You have used Defense Potion\n\n'), !.
 
 
 /* Fungsi-fungsi Equip Item */
@@ -112,7 +115,7 @@ check_required_class(Name):-
     (ItemClass == Class ->
         true
     ;
-        write('Item bukan untuk Class kamu!\n\n'), !, fail
+        write('This item is not fot your class!\n\n'), !, fail
     ).
 
 
@@ -125,7 +128,7 @@ check_required_lvl(Name):-
     player_lvl(Level),
     item(_, _, Name, MinLvl, _),
     Level < MinLvl,
-    write('Level Tidak Mencukupi!'), nl, !, fail.
+    write('Your level is not sufficient, My Lord!'), nl, !, fail.
 
 unequip_weapon :-
     player_class(Class),
@@ -175,12 +178,35 @@ set_item('Armor', Name):-
     asserta(player_def(Def2)),
     asserta(player_armor(Name)), !.
 
+
+equip('Courage Pendant'):-
+    write('This item is already been used'), !.
+
 equip(Name):-
     itemInv(Name,_),
     item(_, Type, Name, _, _),
     set_item(Type, Name), 
-    write(Name), write(' berhasil di-equip!\n\n'), !.
+    write(Name), write(' succesfuly equipped!\n\n'), !.
 
 equip(Name):-
     \+itemInv(Name,_),
-    write('Kamu tidak punya '), write(Name), write('!\n\n'), !.
+    write('You dont have '), write(Name), write('!\n\n'), !.
+
+pendantbuff :-
+    pendantstat(1),
+    player_hp(_, MaxHP),
+    player_mana(_, MaxMana),
+    player_att(Att),
+    player_def(Def),
+    MaxHP1 is MaxHP+750,
+    MaxMana1 is MaxMana+250,
+    Att1 is Att+150,
+    Def1 is Def+150,
+    retract(player_hp(_,MaxHP)),
+    retract(player_mana(_, MaxMana)),
+    retract(player_att(Att)),
+    retract(player_def(Def)),
+    asserta(player_hp(_,MaxHP1)),
+    asserta(player_mana(_, MaxMana1)),
+    asserta(player_att(Att1)),
+    asserta(player_def(Def1)), !.

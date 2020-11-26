@@ -8,6 +8,7 @@
 :- dynamic(player_def/1).   /* player_def(Def) */
 :- dynamic(xp/2).           /* xp(XP, BatasXP) */
 :- dynamic(gold/1).         /* gold(Gold) */
+:- dynamic(pendantstat/1).
 
 /* Fakta-fakta */
 class(1, 'Swordsman').
@@ -112,7 +113,8 @@ set_player(Class):-
     set_att(Class),
     set_def(Class),
     set_xp,
-    set_gold, !.
+    set_gold,
+    asserta(pendantstat(0)), !.
 
 /* Membaca stat player */
 player(Level, Class, Weapon, Armor, HP, MaxHP, Mana, MaxMana, Att, Def, XP, BatasXP, Gold) :-
@@ -128,13 +130,13 @@ player(Level, Class, Weapon, Armor, HP, MaxHP, Mana, MaxMana, Att, Def, XP, Bata
     gold(Gold), !.
 
 response_class(Class):-
-    write('Kamu pilih '),
+    write('Yaou have choosen '),
     write(Class),
     write('!'), nl, nl, !.
 
 /* Inisialisasi Player */
 player_init :-
-    write('Pilih Kelas: '),nl,
+    write('Choose class: '),nl,
     write('1. Swordsman '),nl,
     write('2. Archer '),nl,
     write('3. Magician '),nl,
@@ -164,7 +166,7 @@ write_xp :-
     write('XP: '), write(XP), write('/'), write(BatasXP), nl,nl, !.
 
 level_up :-
-    player(Level, _, _, _, _, MaxHP, _, MaxMana, _, _, XP, BatasXP, _),
+    player(Level, Class, _, _, _, MaxHP, _, MaxMana, _, _, XP, BatasXP, _),
     normal_stat(Att, Def),
     Levelup is Level + 1,
     XP1 is XP - BatasXP,
@@ -191,7 +193,7 @@ level_up :-
     asserta(player_def(Def1)),
     asserta(normal_stat(Att1,Def1)),
     asserta(xp(XP1, BatasXP1)),
-    write('Selamat Anda naik ke level '), write(Levelup), nl,
+    write('Congratulation, My Lord, now you are level '), write(Levelup), nl,
     write_xp, !.
 
 /* Operasi terhadap stat pemain */
@@ -220,5 +222,5 @@ heal :-
     retract(player_mana(_,_)),
     asserta(player_hp(MaxHP,MaxHP)), 
     asserta(player_mana(MaxMana, MaxMana)), 
-    write('Semua lukamu hilang!\n\n'), 
+    write('Your wounds have gone!\n\n'), 
     game, !.

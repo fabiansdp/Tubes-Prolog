@@ -16,7 +16,8 @@ enginestats(0).
 game :-
     enginestats(1),
     print_all,
-    write('Apa yang ingin kamu lakukan?\n'), !.
+    write('What you want to do, My Lord?\n'), nl,
+    write('(Write "help" to show command list)\n'), !.
 
 game :-
     enginestats(0),
@@ -25,9 +26,10 @@ game :-
 start :-
     retract(enginestats(_)),
     asserta(enginestats(1)),
-    write('=======SELAMAT DATANG======='),nl,
-    write('Masyarakat kami sudah bertahun-tahun takut dengan kekuatan Naga Hitam'),nl,
-    write('Tolong bantulah kami untuk membasmi Naga Hitam!'), nl,nl,
+    asserta(battle_status(0)),
+    write('=======WELCOME, WARRIOR!======='),nl,
+    write('Our people have been terrorized by the Ancient Black Dragon for ages'),nl,
+    write('Please, help us to slain the Dragon!'), nl,nl,
     quest_init,
     set_invent,
     map_init,
@@ -37,5 +39,5 @@ start :-
 quit:-
     retractall(enginestats(_)),
     asserta(enginestats(0)),
-    write('Terima kasih sudah bermain!'),nl,
+    write('Thanks for playing!'),nl,
     write('arigatouuu'),nl.

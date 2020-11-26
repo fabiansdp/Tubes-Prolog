@@ -1,25 +1,28 @@
 w :-
     \+ enginestats(1),
-    write('Mulai sek mas'), nl,
-    game, !.
+    write('The Game havent started yet, My Lord'), nl, !.
+
+w :-
+    battle_status(1),
+    write('We are currently in battle, My Lord'), nl, !.
 
 w :-
     player_position(_,Y),
-    Y is 1, write('Duar tembok'), nl,
+    Y is 1, write('This is the end of the map, My Lord'), nl,
     game, !.
 
 w :-
     player_position(X,Y),
     Y2 is Y-1,
     is_obstacle(X,Y2),
-    write('Nabrak euy, tiati bang'), nl,
+    write('You cant go that way, My Lord'), nl,
     game, !.
     
 w :-
     player_position(X,Y),
     Y2 is Y-1,
     is_fence(X,Y2),
-    write('Duar pager'), nl,
+    write('There is a fence ahead, My Lord, cant go that way'), nl,
     game, !.
 
 w :-
@@ -31,7 +34,7 @@ w :-
     is_enemy(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Ada musuh bos'), nl,
+    write('My Lord, Enemies ahead!'), nl,
     encounter, !.
 
 w :-
@@ -43,9 +46,9 @@ w :-
     is_quest(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Your majesty, there is a quest for you'), nl,
-    generatequest,
-    game, !.
+    write('My Lord, there is a quest for you'), nl,
+    showquest,
+    write('Write "takequest" to accept the quest'), !.
 
 w :-
     player_position(X,Y),
@@ -56,7 +59,7 @@ w :-
     is_treasure(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    treasureQuest.
+    treasureQuest, !.
 
 w :-
     player_position(X,Y),
@@ -67,9 +70,7 @@ w :-
     is_gate(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Dziingg, teleport nih'), nl,
-    teleport,
-    game, !.
+    teleportsigns, !.
 
 w :-
     player_position(X,Y),
@@ -80,7 +81,7 @@ w :-
     is_shop(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Wah ada toko nih, bang beli bang!'), nl, shop, !.
+    write('Look, there is a shop!'), nl, shop, !.
     
 w :-
     player_position(X,Y),
@@ -91,7 +92,7 @@ w :-
     is_boss(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Your Majesty, the dungeon boss ahead!'), nl,
+    write('My Lord, the dungeon boss is ahead!'), nl,
     boss_fight, !.
 
 w :-
@@ -106,26 +107,29 @@ w :-
 
 a :-
     \+ enginestats(1),
-    write('Mulai sek mas'), nl,
-    game, !.
+    write('The Game havent started yet, My Lord'), nl, !.
+
+a :-
+    battle_status(1),
+    write('We are currently in battle, My Lord'), nl, !.
 
 a :-
     player_position(X,_),
-    X is 1, write('Duar tembok'), nl,
+    X is 1, write('This is the end of the map, My Lord'), nl,
     game, !.
 
 a :-
     player_position(X,Y),
     X2 is X-1,
     is_obstacle(X2,Y), 
-    write('Nabrak euy, tiati bang'), nl,
+    write('You cant go that way, My Lord'), nl,
     game, !.
 
 a :-
     player_position(X,Y),
     X2 is X-1,
     is_fence(X2,Y), 
-    write('Duar pager'), nl,
+    write('There is a fence ahead, My Lord, cant go that way'), nl,
     game, !.
     
 a :-
@@ -137,7 +141,7 @@ a :-
     is_enemy(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Ada musuh bos'), nl,
+    write('My Lord, Enemies ahead!'), nl,
     encounter, !.
 
 a :-
@@ -149,9 +153,9 @@ a :-
     is_quest(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Your majesty, there is a quest for you'), nl,
-    generatequest,
-    game, !.
+    write('My Lord, there is a quest for you'), nl,
+    showquest,
+    write('Write "takequest" to accept the quest'), !.
 
 a :-
     player_position(X,Y),
@@ -162,7 +166,7 @@ a :-
     is_treasure(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    treasureQuest.
+    treasureQuest, !.
 
 a :-
     player_position(X,Y),
@@ -173,9 +177,7 @@ a :-
     is_gate(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Dziingg, teleport nih'), nl,
-    teleport,
-    game, !.
+    teleportsigns, !.
 
 a :-
     player_position(X,Y),
@@ -186,7 +188,7 @@ a :-
     is_shop(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('wah ada toko nih, bang beli bang!'), nl, shop, !.
+    write('Look, there is a shop!'), nl, shop, !.
 
 a :-
     player_position(X,Y),
@@ -197,7 +199,7 @@ a :-
     is_boss(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Your Majesty, the dungeon boss ahead!'), nl,
+    write('My Lord, the dungeon boss is ahead!'), nl,
     boss_fight, !.
 
 a :-
@@ -212,27 +214,30 @@ a :-
 
 s :-
     \+ enginestats(1),
-    write('Mulai sek mas'), nl,
-    game, !.
+    write('The Game havent started yet, My Lord'), nl, !.
+
+s :-
+    battle_status(1),
+    write('We are currently in battle, My Lord'), nl, !.
 
 s :-
     player_position(_,Y),
     map_height(YY),
-    Y is YY, write('Duar tembok'), nl,
+    Y is YY, write('This is the end of the map, My Lord'), nl,
     game, !.
 
 s :-
     player_position(X,Y),
     Y2 is Y+1,
     is_obstacle(X,Y2), 
-    write('Nabrak euy, tiati bang'), nl,
+    write('You cant go that way, My Lord'), nl,
     game, !.
     
 s :-
     player_position(X,Y),
     Y2 is Y+1,
     is_fence(X,Y2), 
-    write('Duar pager'), nl,
+    write('There is a fence ahead, My Lord, cant go that way'), nl,
     game, !.
 
 s :-
@@ -243,7 +248,7 @@ s :-
     is_shop(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('wah ada toko nih, bang beli bang!'), nl, shop, !.
+    write('Look, there is a shop!'), nl, shop, !.
 
 s :-
     player_position(X,Y),
@@ -253,7 +258,7 @@ s :-
     is_boss(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Your Majesty, the dungeon boss ahead!'), nl,
+    write('My Lord, the dungeon boss is ahead!'), nl,
     boss_fight, !.
 
 s :-
@@ -264,7 +269,7 @@ s :-
     is_enemy(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Ada musuh bos'), nl,
+    write('My Lord, Enemies ahead!'), nl,
     encounter, !.
 
 s :-
@@ -275,9 +280,9 @@ s :-
     is_quest(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Your majesty, there is a quest for you'), nl,
-    generatequest,
-    game, !.
+    write('My Lord, there is a quest for you'), nl,
+    showquest,
+    write('Write "takequest" to accept the quest'), !.
 
 s :-
     player_position(X,Y),
@@ -287,7 +292,7 @@ s :-
     is_treasure(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    treasureQuest.
+    treasureQuest, !.
 
 s :-
     player_position(X,Y),
@@ -297,9 +302,7 @@ s :-
     is_gate(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Dziingg, teleport nih'), nl,
-    teleport,
-    game, !.
+    teleportsigns, !.
 
 s :-
     player_position(X,Y),
@@ -312,27 +315,30 @@ s :-
 
 d :-
     \+ enginestats(1),
-    write('Mulai sek mas'), nl,
-    game, !.
+    write('The Game havent started yet, My Lord'), nl, !.
+
+d :-
+    battle_status(1),
+    write('We are currently in battle, My Lord'), nl, !.
 
 d :-
     player_position(X,_),
     map_width(XX),
-    X is XX, write('Duar tembok'), nl,
+    X is XX, write('This is the end of the map, My Lord'), nl,
     game, !.
 
 d :-
     player_position(X,Y),
     X2 is X+1,
     is_obstacle(X2,Y), 
-    write('Nabrak euy, tiati bang'), nl,
+    write('You cant go that way, My Lord'), nl,
     game, !.
 
 d :-
     player_position(X,Y),
     X2 is X+1,
     is_fence(X2,Y), 
-    write('Duar pager'), nl,
+    write('There is a fence ahead, My Lord, cant go that way'), nl,
     game, !.
 
 d :-
@@ -343,7 +349,7 @@ d :-
     is_shop(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('wah ada toko nih, bang beli bang!'), nl, shop, !.
+    write('Look, there is a shop!'), nl, shop, !.
 
 d :-
     player_position(X,Y),
@@ -353,7 +359,7 @@ d :-
     is_boss(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Your Majesty, the dungeon boss ahead!'), nl,
+    write('My Lord, the dungeon boss is ahead!'), nl,
     boss_fight, !.
 
 d :-
@@ -364,7 +370,7 @@ d :-
     is_enemy(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Ada musuh bos'), nl,
+    write('My Lord, Enemies ahead!'), nl,
     encounter, !.
 
 d :-
@@ -375,9 +381,9 @@ d :-
     is_quest(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Your majesty, there is a quest for you'), nl,
-    generatequest,
-    game, !.
+    write('My Lord, there is a quest for you'), nl,
+    showquest,
+    write('Write "takequest" to accept the quest'), !.
 
 d :-
     player_position(X,Y),
@@ -387,7 +393,7 @@ d :-
     is_treasure(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    treasureQuest.
+    treasureQuest, !.
 
 d :-
     player_position(X,Y),
@@ -397,10 +403,8 @@ d :-
     is_gate(X2,Y2),
     retract(player_position(X,Y)),
     asserta(player_position(X2,Y2)),
-    write('Dziingg, teleport nih'), nl,
-    teleport,
-    game.
-    
+    teleportsigns, !.
+
 d :-
     player_position(X,Y),
     X > 0,
@@ -410,22 +414,83 @@ d :-
     asserta(player_position(X2,Y2)),
     game, !.
 
+teleportsigns:-
+    player_position(18,2),
+    write('There is a teleport gate here'), nl,
+    write('Write "teleport1" to teleport to zone 2 (middle zone)'), nl,
+    write('Write "teleport2" to teleport to zone 3 (bottom zone)'), nl, !.
 
-teleport :-
-    player_position(X,Y),
-    gate1_position(A,B),
-    gate2_position(C,D),
-    X =:= A, Y =:= B,
-    retract(player_position(X,Y)),
-    asserta(player_position(C,D)), !.
+teleportsigns:-
+    player_position(3,7),
+    write('There is a teleport gate here'), nl,
+    write('Write "teleport1" to teleport to zone 1 (upper zone)'), nl,
+    write('Write "teleport2" to teleport to zone 3 (bottom zone)'), nl, !.
 
-teleport :-
-    player_position(X,Y),
+teleportsigns:-
+    player_position(10,20),
+    write('There is a teleport gate here'), nl,
+    write('Write "teleport1" to teleport to zone 1 (upper zone)'), nl,
+    write('Write "teleport2" to teleport to zone 2 (middle zone)'), nl, !.
+
+teleport1 :-
+    player_position(3,7),
     gate1_position(A,B),
-    gate2_position(C,D),
-    X =:= C, Y =:= D,
-    retract(player_position(X,Y)),
-    asserta(player_position(A,B)), !.
+    retract(player_position(_,_)),
+    asserta(player_position(A,B)),
+    write('Teleport gate succesfully activated!\n'),
+    game, !.
+
+teleport1 :-
+    player_position(10,20),
+    gate1_position(A,B),
+    retract(player_position(_,_)),
+    asserta(player_position(A,B)),
+    write('Teleport gate succesfully activated!\n'),
+    game, !.
+
+teleport1 :-
+    player_position(_,_),
+    write('There is no teleport gate nearby or you are already in destination position\n'), !.
+
+teleport2 :-
+    player_position(18,2),
+    gate2_position(A,B),
+    retract(player_position(_,_)),
+    asserta(player_position(A,B)),
+    write('Teleport gate succesfully activated!\n'), 
+    game, !.
+
+teleport2 :-
+    player_position(10,20),
+    gate2_position(A,B),
+    retract(player_position(_,_)),
+    asserta(player_position(A,B)),
+    write('Teleport gate succesfully activated!\n'), 
+    game, !.
+
+teleport2 :-
+    player_position(_,_),
+    write('There is no teleport gate nearby or you are already in destination position\n'), !.
+
+teleport3 :-
+    player_position(18,2),
+    gate3_position(A,B),
+    retract(player_position(_,_)),
+    asserta(player_position(A,B)),
+    write('Teleport gate succesfully activated!\n'),
+    game, !.
+
+teleport3 :-
+    player_position(3,3),
+    gate3_position(A,B),
+    retract(player_position(_,_)),
+    asserta(player_position(A,B)),
+    write('Teleport gate succesfully activated!\n'),
+    game, !.
+
+teleport3 :-
+    player_position(_,_),
+    write('There is no teleport gate nearby or you are already in destination position\n'), !.
 
 encounter :-
     player_position(_, Y),
@@ -439,29 +504,46 @@ encounter :-
     player_position(_, Y),
     Y > 12, battle(3), !.
 
-generatequest :-
+takequest :-
     player_position(2, 5),
     startquest(1), !.
-
-generatequest :-
+takequest :-
     player_position(15, 1),
     startquest(2), !.
-
-generatequest :-
+takequest :-
     player_position(1, 8),
     startquest(3), !.
-
-generatequest :-
+takequest :-
     player_position(10, 11),
     startquest(4), !.
-
-generatequest :-
+takequest :-
     player_position(1, 20),
     startquest(5), !.
-
-generatequest :-
+takequest :-
     player_position(5, 13),
     startquest(6), !.
+takequest :-
+    player_position(_,_),
+    write('There is no quest nearby, My Lord'), nl, !.
+
+showquest :-
+    player_position(2, 5),
+    printquest(1), !.
+showquest :-
+    player_position(15, 1),
+    printquest(2), !.
+showquest :-
+    player_position(1, 8),
+    printquest(3), !.
+showquest :-
+    player_position(10, 11),
+    printquest(4), !.
+showquest :-
+    player_position(1, 20),
+    printquest(5), !.
+showquest :-
+    player_position(5, 13),
+    printquest(6), !.
 
 legend :-
     print_all,
@@ -472,4 +554,4 @@ legend :-
     write('D = Boss\n'),
     write('Q = Quest\n'),
     write('T = ?????\n'),
-    write('Apa yang ingin kamu lakukan?\n\n').
+    write('What you want to do, My Lord?\n\n').

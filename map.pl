@@ -1,4 +1,5 @@
 :- dynamic(player_position/2).
+:- dynamic(treasure_position/2).
 
 /* =============== */
 %  GAMBAR MAP EUYY  %
@@ -16,8 +17,9 @@ enemy(10,19).
 enemy(17,15).
 enemy(17,13).
 boss_position(20,20).
-gate1_position(3,7).
-gate2_position(10,20).
+gate1_position(18,2).
+gate2_position(3,7).
+gate3_position(10,20).
 quest_position(15,1).
 quest_position(2,5).
 quest_position(1,8).
@@ -32,13 +34,13 @@ obstacle5(19,14).
 obstacle6(16,16).
 obstacle7(4,15).
 obstacle8(3,19).
-treasure_position(20,13).
 
 /* ============================ */
 /* TAROK DULU PEMAIN DI POJOKAN */
 /* ============================ */
 map_init :-
-    asserta(player_position(1,1)), !.
+    asserta(player_position(1,1)),
+    asserta(treasure_position(20,13)), !.
 
 
 % ========================== %
@@ -76,6 +78,10 @@ is_gate(X,Y) :-
 
 is_gate(X,Y) :-
     gate2_position(A,B),
+    X =:= A, Y =:= B, !.
+
+is_gate(X,Y) :-
+    gate3_position(A,B),
     X =:= A, Y =:= B, !.
 
 is_fence(X,Y) :-

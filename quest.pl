@@ -5,10 +5,6 @@
 :-dynamic(levelsekarang/1).
 %levelsekarang(L) level quest yang sekarang sedang dijalankan (1-6)
 
-:-dynamic(treasurestats/1).
-%treasurestats(1) maka bonus quest sudah pernah diambil sebelumnya
-%treasurestats(0) maka bonus quest belum pernah diambil sebelumnya
-
 :-dynamic(killstats/3).
 % killstats(slime,goblin,wolf)
 
@@ -41,30 +37,32 @@ startquest(A):-
     retractall(killstats(_,_,_)),
     asserta(killstats(0,0,0)),
     asserta(statusquest(1)),
-    asserta(levelsekarang(A)), !;
+    asserta(levelsekarang(A)),
+    write('Quest started!'), nl, !;
 
     statusquest(1),
-    write('Selesaikan quest yang sudah ada dulu gan\n\n').
+    write('You already have an active quest, My Lord\n\n').
 
 abandon :-
     statusquest(1),
     retractall(statusquest(_)),
-    write('Anda telah menyerah pada quest ini\n'),
+    write('You have abandon the quest\n'),
     asserta(statusquest(0)),!;
 
-    statusquest(0), write('Tidak ada quest yang dijalankan!\n\n').
+    statusquest(0), write('There is no active quest, My Lord!\n\n').
 
 %bonusQuest
 treasureQuest:-
-    treasurestats(1),
-    write('Harta karun sudah pernah diambil bos\n\n');
-
-    treasurestats(0),
-    write('Selamat Anda menemukan harta karun'),nl,
-    write('1000 Gold telah ditambahkan\n\n'),
+    write('Congratulation, you found the treasure, My Lord!'),nl,
+    write('1000 Golds have been added\n\n'),
     add_gold(1000),
-    retract(treasurestats(_)),
-    asserta(treasurestats(1)), game.
+    write('Courage Pendant obtained, Your stats are increased!\n'), nl,
+    addItemInv('Courage Pendant'),
+    retract(pendantstat(_)),
+    asserta(pendantstat(1)),
+    pendantbuff,
+    retractall(treasure_position(_,_)),
+    game, !.
 
 check_completion :-
     levelsekarang(X),
@@ -73,7 +71,7 @@ check_completion :-
     (Slime == SGoal -> 
         (Goblin == GGoal ->
             (Wolf == WGoal ->
-                write('Quest Selesai!\n'),
+                write('The Quest is finished, My Lord!\n'),
                 retractall(statusquest(_)),
                 asserta(statusquest(0)),
                 quest(X, XP, Gold),
@@ -115,7 +113,7 @@ checkquest :-
     levelsekarang(X),
     killstats(S,G,W),
     quest_goal(X, SGoal, GGoal, WGoal),
-    write('Status Quest:\n'),
+    write('Quest status:\n'),
     write('Slime: '), write(S), write('/'), write(SGoal), nl,
     write('Goblin: '), write(G), write('/'), write(GGoal), nl,
     write('Wolf: '), write(W), write('/'), write(WGoal), nl, nl,
@@ -123,5 +121,17 @@ checkquest :-
 
 checkquest :-
     statusquest(0),
-    write('Kamu tidak ada Quest!\n\n'), 
+    write('There is no active quest, My Lord!\n\n'), 
     game.
+
+printquest(X) :-
+    quest_goal(X, SGoal, GGoal, WGoal),
+    quest(X, Xpq, Goldq), nl,
+    write('Quest Goals :\n'), nl,
+    write('Kill :\n'),
+    write('Slime: '), write(SGoal), nl,
+    write('Goblin: '), write(GGoal), nl,
+    write('Wolf: '), write(WGoal), nl, nl, 
+    write('Quest Reward :\n'),
+    write('XP: '), write(Xpq), nl,
+    write('Gold: '), write(Goldq), nl, nl, !.

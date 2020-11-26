@@ -43,14 +43,14 @@ check_dead_enemy :-
         enemy_name(Enemy),
         enemy(Enemy,_,_,_,_,_,XP,Gold),
         write(Enemy),
-        write(' telah mati!\n\n'),
+        write(' is dead!\n\n'),
         add_gold(Gold),
         add_xp(XP),
         retract(battle_status(_)),
         asserta(battle_status(0)),
         (statusquest(1) -> quest_tracker(Enemy) ; true),
         (enemy_name('Ancient Black Dragon') ->
-            write('Kamu Telah Membasmi Naga Hitam!!\n\n'),
+            write('You have slain the Ancient Black Dragon!!\n\n'),
             retract(enginestats(_)),
             asserta(enginestats(0))
         ;
@@ -63,7 +63,7 @@ check_dead_enemy :-
 check_dead :-
     player_hp(HP, _),
     (HP =< 0 ->  
-        write('Kamu mati!\n\n'),
+        write('You are dead!\n\n'),
         write('GAME OVER!!!\n\n'),
         retract(battle_status(_)),
         retract(enginestats(_)),
@@ -74,7 +74,7 @@ check_dead :-
     ).
 
 decr_hp(X) :-
-    write('HP kamu berkurang sebanyak '), write(X), nl,
+    write('Your HP is reduced by '), write(X), nl,
     player_hp(HP, MaxHP),
     HP1 is HP - X,
     retract(player_hp(_,_)),
@@ -82,7 +82,7 @@ decr_hp(X) :-
     check_dead, !.
 
 add_hp(X) :-
-    write('HP kamu bertambah sebanyak '), write(X), write('!'), nl,
+    write('Your HP is reduced by '), write(X), write('!'), nl,
     player_hp(HP, MaxHP),
     HP1 is HP + X,
     retract(player_hp(_,_)),
@@ -105,7 +105,7 @@ decr_cd :-
     retract(skill_cd(_)),
     (CD1 == 0 ->
         asserta(skill_cd(CD1)),
-        write('Special Attack dapat dipakai lagi\n\n')
+        write('Special Attack can be used again\n\n')
 
     ; asserta(skill_cd(CD1))    
     ).
@@ -126,14 +126,14 @@ decr_effect :-
     (CD1 == 0 ->
         asserta(effect_cd(CD1)),
         normalize_stat,
-        write('Efek spesial telah hilang\n\n')
+        write('The Special effect duration has end\n\n')
 
     ; asserta(effect_cd(CD1))    
     ).
 
 decr_enemy_hp(X) :-
     enemy_name(Name),
-    write('HP '), write(Name), write(' berkurang sebanyak '), write(X), nl,
+    write('HP '), write(Name), write(' is reduced by '), write(X), nl,
     enemy_hp(HP, MaxHP), 
     HP1 is HP - X,
     retract(enemy_hp(_,_)),
@@ -142,7 +142,7 @@ decr_enemy_hp(X) :-
 
 attack :-
     (battle_status(1) ->
-        write('Kamu Menyerang!\n\n'),
+        write('You are attacking!\n\n'),
         enemy_def(Def),
         player_att(Att),
         Damage is Att - Def*0.2,
@@ -156,7 +156,7 @@ attack :-
         battle_mechanism
 
     ; 
-        write('Kamu tidak dalam battle!\n'), 
+        write('You are not in battle, My Lord!\n'), 
         game
     ).
 
@@ -165,10 +165,10 @@ lari :-
     (X == 1 ->
         retract(battle_status(_)),
         asserta(battle_status(0)),
-        write('Kamu berhasil melarikan diri dari battle!\n\n'),
+        write('My Lord, we are succesfully fleet from the battle!\n\n'),
         battle_mechanism
     ; 
-        write('Oops kamu ga berhasil melarikan diri!\n\n'),
+        write('Oops, we failed to flee, My Lord!\n\n'),
         retract(turn(_)),
         asserta(turn(0)),
         battle_mechanism
@@ -182,7 +182,7 @@ skill_effect('Rage') :-
     ManaDecr is (30 + 10*(Level-1)),
     Mana1 is Mana - ManaDecr,
     (Mana1 < 0 ->
-        write('Mana tidak cukup!\n\n')
+        write('Not enough mana!\n\n')
 
     ;
         decr_mana(ManaDecr),
@@ -199,7 +199,7 @@ skill_effect('Rage') :-
         asserta(skill_cd(3)),
         asserta(effect_cd(2)),
         write('Rage!!!\n'), 
-        write('Stat kamu bertambah untuk dua turn!\n\n'),
+        write('Your stats has been increased for 2 turns!\n\n'),
         retract(turn(_)),
         asserta(turn(0))
     ).
@@ -212,7 +212,7 @@ skill_effect('Power Shot') :-
     ManaDecr is (40 + 10*(Level-1)),
     Mana1 is Mana - ManaDecr,
     (Mana1 < 0 ->
-        write('Mana tidak cukup!\n\n')
+        write('Not enough mana!\n\n')
 
     ;
         decr_mana(ManaDecr),
@@ -234,12 +234,12 @@ skill_effect('Divine Light') :-
     ManaDecr is (50 + 20*(Level-1)),
     Mana1 is Mana - ManaDecr,
     (Mana1 < 0 ->
-        write('Mana tidak cukup!\n\n')
+        write('Not enough mana!\n\n')
 
     ;
         decr_mana(ManaDecr),
         write('Divine Light!!!\n'), 
-        write('Stat kamu bertambah untuk 2 turn!\n'),
+        write('Your stats has been increased for 2 turns!\n'),
         HPMod is HP * (0.4 + 0.01*(Level-1)),
         add_hp(HPMod),
         AttMod is 20 + 5*(Level-1),
@@ -267,7 +267,7 @@ specialattack :-
 enemy_attack :-
     enemy_name(Name),
     write(Name),
-    write(' menyerang!\n\n'),
+    write(' is attacking!\n\n'),
     player_def(Def),
     enemy_att(Att),
     Damage is Att - Def*0.2,
@@ -310,9 +310,10 @@ battle(X) :-
     setup_enemy(Enemy),
     enemy_name(Enemy), 
     enemy_hp(HP, MaxHP), nl,
-    write('Musuhmu adalah '), 
+    write('My Lord, your enemy is '), 
     write(Enemy), nl, 
     write('HP: '), write(HP), write('/'), write(MaxHP), nl, nl,
+    write('(Write "help" to show what you can do)\n'),nl,
     battle_mechanism, !.
 
 boss_fight :-
@@ -333,8 +334,8 @@ boss_fight :-
     enemy_name(Enemy), 
     enemy_hp(HP, MaxHP), nl,
     write('=== BOSS FIGHT =====\n'),
-    write('Kalahkan Naga Hitam!\n\n'),
-    write('Musuhmu adalah '), 
+    write('Defeat the Ancient Black Dragon!\n\n'),
+    write('Enemy : '), 
     write(Enemy), nl, 
     write('HP: '), write(HP), write('/'), write(MaxHP), nl, nl,
     battle_mechanism, !.
