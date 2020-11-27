@@ -36,7 +36,7 @@ Pilih Kelas:
 Kamu pilih Swordsman!
 ```
 ## List Command
-1. help
+1. help\
 Menampilkan daftar command
 ```
 | ?- help.
@@ -51,13 +51,13 @@ Daftar Command:
 8. inventory (Lihat Inventory)
 9. checkquest (Check Status Quest)
 ```
-2. heal (Hanya bisa dilakukan di luar battle)
+2. heal (Hanya bisa dilakukan di luar battle)\
 Memulihkan HP dan mana pemain.
 ```
 | ?- heal.
 Semua lukamu hilang!
 ```
-3. legend
+3. legend\
 Menampilkan legend peta.
 ```
 | ?- legend.
@@ -91,7 +91,7 @@ D = Boss
 Q = Quest
 T = ?????
 ```
-4. status
+4. status\
 Menampilkan status pemain.
 ```
 | ?- status.
@@ -106,14 +106,14 @@ Defense: 20
 XP: 0/10
 Gold: 0
 ```
-5. inventory
+5. inventory\
 Membuka inventory pemain.
 ```
 | ?- inventory.
 Inventory: 
 5 Red Potion
 ```
-6. checkquest
+6. checkquest\
 Mengecek quest yang sedang dijalani.
 ```
 | ?- checkquest.
@@ -132,21 +132,21 @@ di map 2D ini. Juga diterapkan sebuah titik teleport di dalam map. Pemain juga d
 
 ### Mekanisme Battle
 Untuk mekanisme battle, game ini memakai sistem turn based yang sederhana. Command-command yang tersedia di mode battle :
-1. attack
+1. attack\
 Pemain akan menyerang dan menimbulkan damage sebesar attack dikurangi defense musuh.
-2. flee
+2. flee\
 Pemain dapat melarikan diri dari musuh dengan peluang 50%. Jika gagal, turn player akan habis dan diganti turn musuh.
-3. specialattack
+3. specialattack\
 Pemain dapat mengeluarkan special attack yang spesifik dengan class masing-masing.
-4. status
+4. status\
 Melihat status pemain.
-5. redpotion
+5. redpotion\
 Memakai red potion.
-6. bluepotion
+6. bluepotion\
 Memakai blue potion.
-7. enragepotion
+7. enragepotion\
 Memakai enrage potion.
-8. defensepotion
+8. defensepotion\
 Memakai defense potion.
-9. help
+9. help\
 Menampilkan daftar command.
