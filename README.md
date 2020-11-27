@@ -14,7 +14,7 @@
 ## Penjelasan
 Kamu adalah seorang yang terdampar di sebuah pulau terpencil. Setelah bertanya-tanya ke warga setempat, masalah utama warga itu adalah Naga Hitam yang memperbudak mereka. Bantulah mereka untuk membasmi naga itu!
 
-### Cara Memulai
+## Cara Memulai
 Pertama, compile file startgame:
 ```
 ?- [startgame].
@@ -35,8 +35,9 @@ Pilih Kelas:
 
 Kamu pilih Swordsman!
 ```
-### List Command
+## List Command
 1. help
+Menampilkan daftar command
 ```
 | ?- help.
 Daftar Command:
@@ -51,11 +52,13 @@ Daftar Command:
 9. checkquest (Check Status Quest)
 ```
 2. heal (Hanya bisa dilakukan di luar battle)
+Memulihkan HP dan mana pemain.
 ```
 | ?- heal.
 Semua lukamu hilang!
 ```
 3. legend
+Menampilkan legend peta.
 ```
 | ?- legend.
 ######################
@@ -89,6 +92,7 @@ Q = Quest
 T = ?????
 ```
 4. status
+Menampilkan status pemain.
 ```
 | ?- status.
 Level: 1
@@ -103,12 +107,14 @@ XP: 0/10
 Gold: 0
 ```
 5. inventory
+Membuka inventory pemain.
 ```
 | ?- inventory.
 Inventory: 
 5 Red Potion
 ```
 6. checkquest
+Mengecek quest yang sedang dijalani.
 ```
 | ?- checkquest.
 Status Quest:
@@ -117,7 +123,30 @@ Goblin: 0/0
 Wolf: 0/0
 ```
 
-### Mekanisme Game
-Game ini merupakan sebuah adventure based game dengan sistem leveling yang mirip dengan game RPG. Untuk mekanisme battle,
-game ini memakai sistem turn based yang sederhana. Untuk mekanisme eksplorasi, pemain memakai command wasd untuk menggerakkan avatarnya
+## Mekanisme Game
+Game ini merupakan sebuah adventure based game dengan sistem leveling yang mirip dengan game RPG. 
+
+### Mekanisme Eksplorasi
+Untuk mekanisme eksplorasi, pemain memakai command wasd untuk menggerakkan avatar-nya
 di map 2D ini. Juga diterapkan sebuah titik teleport di dalam map. Pemain juga dapat menemukan sebuah harta karun yang disembunyikan di dalam map.
+
+### Mekanisme Battle
+Untuk mekanisme battle, game ini memakai sistem turn based yang sederhana. Command-command yang tersedia di mode battle :
+1. attack
+Pemain akan menyerang dan menimbulkan damage sebesar attack dikurangi defense musuh.
+2. flee
+Pemain dapat melarikan diri dari musuh dengan peluang 50%. Jika gagal, turn player akan habis dan diganti turn musuh.
+3. specialattack
+Pemain dapat mengeluarkan special attack yang spesifik dengan class masing-masing.
+4. status
+Melihat status pemain.
+5. redpotion
+Memakai red potion.
+6. bluepotion
+Memakai blue potion.
+7. enragepotion
+Memakai enrage potion.
+8. defensepotion
+Memakai defense potion.
+9. help
+Menampilkan daftar command.

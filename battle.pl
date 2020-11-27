@@ -82,7 +82,7 @@ decr_hp(X) :-
     check_dead, !.
 
 add_hp(X) :-
-    write('Your HP is reduced by '), write(X), write('!'), nl,
+    write('Your HP is raised by '), write(X), write('!'), nl,
     player_hp(HP, MaxHP),
     HP1 is HP + X,
     retract(player_hp(_,_)),
@@ -126,7 +126,7 @@ decr_effect :-
     (CD1 == 0 ->
         asserta(effect_cd(CD1)),
         normalize_stat,
-        write('The Special effect duration has end\n\n')
+        write('The Special effect duration has ended\n\n')
 
     ; asserta(effect_cd(CD1))    
     ).
@@ -160,12 +160,12 @@ attack :-
         game
     ).
 
-lari :-
+flee :-
     random(1,3,X),
     (X == 1 ->
         retract(battle_status(_)),
         asserta(battle_status(0)),
-        write('My Lord, we are succesfully fleet from the battle!\n\n'),
+        write('My Lord, we have succesfully fled from the battle!\n\n'),
         battle_mechanism
     ; 
         write('Oops, we failed to flee, My Lord!\n\n'),
@@ -199,7 +199,7 @@ skill_effect('Rage') :-
         asserta(skill_cd(3)),
         asserta(effect_cd(2)),
         write('Rage!!!\n'), 
-        write('Your stats has been increased for 2 turns!\n\n'),
+        write('Your stats have been increased for 2 turns!\n\n'),
         retract(turn(_)),
         asserta(turn(0))
     ).
@@ -226,7 +226,7 @@ skill_effect('Power Shot') :-
     ).
 
 skill_effect('Divine Light') :-
-    player_hp(HP,_),
+    player_hp(_,MaxHP),
     player_att(Att),
     player_def(Def),
     player_lvl(Level),
@@ -239,8 +239,8 @@ skill_effect('Divine Light') :-
     ;
         decr_mana(ManaDecr),
         write('Divine Light!!!\n'), 
-        write('Your stats has been increased for 2 turns!\n'),
-        HPMod is HP * (0.4 + 0.01*(Level-1)),
+        write('Your stats have been increased for 2 turns!\n'),
+        HPMod is MaxHP * (0.4 + 0.01*(Level-1)),
         add_hp(HPMod),
         AttMod is 20 + 5*(Level-1),
         DefMod is 20 + 5*(Level-1),
@@ -313,7 +313,6 @@ battle(X) :-
     write('My Lord, your enemy is '), 
     write(Enemy), nl, 
     write('HP: '), write(HP), write('/'), write(MaxHP), nl, nl,
-    write('(Write "help" to show what you can do)\n'),nl,
     battle_mechanism, !.
 
 boss_fight :-

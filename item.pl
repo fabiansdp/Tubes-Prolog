@@ -180,7 +180,7 @@ set_item('Armor', Name):-
 
 
 equip('Courage Pendant'):-
-    write('This item is already been used'), !.
+    write('This item has already been used'), !.
 
 equip(Name):-
     itemInv(Name,_),

@@ -46,14 +46,14 @@ startquest(A):-
 abandon :-
     statusquest(1),
     retractall(statusquest(_)),
-    write('You have abandon the quest\n'),
+    write('You have abandoned the quest\n'),
     asserta(statusquest(0)),!;
 
     statusquest(0), write('There is no active quest, My Lord!\n\n').
 
 %bonusQuest
 treasureQuest:-
-    write('Congratulation, you found the treasure, My Lord!'),nl,
+    write('Congratulations, you found the treasure, My Lord!'),nl,
     write('1000 Golds have been added\n\n'),
     add_gold(1000),
     write('Courage Pendant obtained, Your stats are increased!\n'), nl,

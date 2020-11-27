@@ -130,7 +130,7 @@ player(Level, Class, Weapon, Armor, HP, MaxHP, Mana, MaxMana, Att, Def, XP, Bata
     gold(Gold), !.
 
 response_class(Class):-
-    write('Yaou have choosen '),
+    write('You have chosen '),
     write(Class),
     write('!'), nl, nl, !.
 
@@ -193,7 +193,7 @@ level_up :-
     asserta(player_def(Def1)),
     asserta(normal_stat(Att1,Def1)),
     asserta(xp(XP1, BatasXP1)),
-    write('Congratulation, My Lord, now you are level '), write(Levelup), nl,
+    write('Congratulations, My Lord, now you are level '), write(Levelup), nl,
     write_xp, !.
 
 /* Operasi terhadap stat pemain */

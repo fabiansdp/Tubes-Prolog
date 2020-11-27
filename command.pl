@@ -1,12 +1,13 @@
 read_command :-
-    write('What you want to do, My Lord?\n'),
+    write('What you want to do, My Lord?\n'), nl,
+    write('(Write "help" to show what you can do)\n'),nl,
     read(X), nl,
     do(X), !.
 
 /* Command Battle */
 do('attack') :- attack.
 
-do('flee') :- lari.
+do('flee') :- flee.
 
 do('help') :-
     write('Battle action list:\n'),
