@@ -4,15 +4,22 @@
 ## Daftar Isi
 * [Kontributor](#kontributor)
 * [Penjelasan](#penjelasan)
+* [Spesifikasi](#spesifikasi)
+* [Cara Memulai](#cara-memulai)
+* [List Command](#list-command)
+* [Mekanisme Game](#mekanisme-game)
 
 ## Kontributor
-1. Fabian Savero Diaz Pranoto
-2. Hafid Abi Daniswara
-3. Pratama Andiko
-4. Syamil Cholid A.
+* Hafid Abi Daniswara (13519028)
+* Syamil Cholid A (13519052)
+* Pratama Andiko (13519112)
+* Fabian Savero Diaz Pranoto (13519140)
 
 ## Penjelasan
 Kamu adalah seorang yang terdampar di sebuah pulau terpencil. Setelah bertanya-tanya ke warga setempat, masalah utama warga itu adalah Naga Hitam yang memperbudak mereka. Bantulah mereka untuk membasmi naga itu!
+
+## Spesifikasi
+Game dapat dijalankan pada terminal GNU Prolog maupun di terminal Ubuntu yang telah diinstall gprolog.
 
 ## Cara Memulai
 Pertama, compile file startgame:
